@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("LEARNER")
+  createdAt DateTime @default(now())
+  videos    Video[]
+}
+
+model Video {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  filename    String
+  mimetype    String
+  duration    Float?
+  status      String    @default("UPLOADING")
+  uploadedBy  User      @relation(fields: [uploaderId], references: [id])
+  uploaderId  String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  segments    Segment[]
+  keyTerms    KeyTerm[]
+}
+
+model Segment {
+  id        String @id @default(cuid())
+  videoId   String
+  video     Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  startTime Float
+  endTime   Float
+  text      String
+  index     Int
+}
+
+model KeyTerm {
+  id          String @id @default(cuid())
+  videoId     String
+  video       Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  term        String
+  explanation String
+  segmentRef  Int?
+  ageGroup    String @default("general")
+}
