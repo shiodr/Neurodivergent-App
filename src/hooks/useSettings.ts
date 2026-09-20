@@ -1,7 +1,14 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { type UserSettings, type TextSize, type PlaybackSpeed, DEFAULT_SETTINGS } from '@/types'
+import {
+  type UserSettings,
+  type TextSize,
+  type PlaybackSpeed,
+  type AgeGroup,
+  type CalmTheme,
+  DEFAULT_SETTINGS,
+} from '@/types'
 
 const STORAGE_KEY = 'nd-app-settings'
 
@@ -42,19 +49,55 @@ export function useSettings() {
   }, [settings, loaded])
 
   const updateTextSize = useCallback((textSize: TextSize) => {
-    setSettings(prev => ({ ...prev, textSize }))
+    setSettings((prev) => ({ ...prev, textSize }))
   }, [])
 
   const toggleCaptions = useCallback(() => {
-    setSettings(prev => ({ ...prev, captionsEnabled: !prev.captionsEnabled }))
+    setSettings((prev) => ({ ...prev, captionsEnabled: !prev.captionsEnabled }))
   }, [])
 
   const updatePlaybackSpeed = useCallback((playbackSpeed: PlaybackSpeed) => {
-    setSettings(prev => ({ ...prev, playbackSpeed }))
+    setSettings((prev) => ({ ...prev, playbackSpeed }))
   }, [])
 
   const toggleHighContrast = useCallback(() => {
-    setSettings(prev => ({ ...prev, highContrast: !prev.highContrast }))
+    setSettings((prev) => ({
+      ...prev,
+      highContrast: !prev.highContrast,
+      calmTheme: !prev.highContrast ? 'high-contrast' : 'default',
+    }))
+  }, [])
+
+  const toggleReducedMotion = useCallback(() => {
+    setSettings((prev) => ({ ...prev, reducedMotion: !prev.reducedMotion }))
+  }, [])
+
+  const updateCalmTheme = useCallback((calmTheme: CalmTheme) => {
+    setSettings((prev) => ({
+      ...prev,
+      calmTheme,
+      highContrast: calmTheme === 'high-contrast',
+    }))
+  }, [])
+
+  const updateAgeGroup = useCallback((ageGroup: AgeGroup) => {
+    setSettings((prev) => ({ ...prev, ageGroup }))
+  }, [])
+
+  const toggleAutoPauseBreaks = useCallback(() => {
+    setSettings((prev) => ({ ...prev, autoPauseBreaks: !prev.autoPauseBreaks }))
+  }, [])
+
+  const toggleSkipSilence = useCallback(() => {
+    setSettings((prev) => ({ ...prev, skipSilence: !prev.skipSilence }))
+  }, [])
+
+  const toggleCoreConceptsOnly = useCallback(() => {
+    setSettings((prev) => ({ ...prev, coreConceptsOnly: !prev.coreConceptsOnly }))
+  }, [])
+
+  const resetSettings = useCallback(() => {
+    setSettings(DEFAULT_SETTINGS)
   }, [])
 
   return {
@@ -64,5 +107,12 @@ export function useSettings() {
     toggleCaptions,
     updatePlaybackSpeed,
     toggleHighContrast,
+    toggleReducedMotion,
+    updateCalmTheme,
+    updateAgeGroup,
+    toggleAutoPauseBreaks,
+    toggleSkipSilence,
+    toggleCoreConceptsOnly,
+    resetSettings,
   }
 }

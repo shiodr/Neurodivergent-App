@@ -8,34 +8,50 @@ This project is built with [Next.js](https://nextjs.org), bootstrapped with [`cr
 
 ## Key Features
 
-### 1. Accessible Video Player
+### 1. Accessible Video Player & Chapter Markers
 - Custom accessible controls with large touch targets and keyboard navigation (`Space`/`K` play/pause, `←`/`→` 5s seek, `J`/`L` 10s seek, `M` mute).
 - Playback speed controls (0.5x, 0.75x, 1x, 1.25x, 1.5x, 1.75x, 2x) to let learners slow down for absorption or speed up for review.
+- **Visual Chapter Markers:** Topic notches on the progress bar with hover tooltips and one-click chapter navigation.
 - Synchronized caption overlay with high-visibility contrast background.
 - Support for MP4 and WebM video formats.
 
-### 2. Interactive Synchronized Transcript
-- Full, searchable lesson transcript organized by timestamped segments.
-- Automatically highlights the sentence currently being spoken in the video.
-- **Click-to-Seek:** Clicking any sentence in the transcript instantly jumps playback to that exact moment.
-- Inline highlighted key terms that open simplified explanations with a single click.
-- **On-Demand Explanation:** Highlighting any phrase in the transcript displays a floating *"Explain with AI"* button.
+### 2. Conversational AI Lesson Companion
+- Clean, non-distracting chat panel strictly grounded in the current lesson transcript + key terms (RAG).
+- **Suggested Quick Prompts:** Single-tap chips for "Explain this more simply", "What was the main idea just now?", "I'm confused – help", and "Summarize the last 3 minutes".
+- **Age-Level Mode:** One-click toggle between **Elementary** (grades 3-5, everyday analogies, simple language) and **High School** (grades 9-12, conceptual relationships).
+- **Audio Text-to-Speech (TTS):** Browser Web Speech API reads any assistant response aloud with one click.
+- **Private Persistence:** Chat history automatically saved in `localStorage` per lesson with an instant reset button.
+- **Required Safety Disclaimer:** Visible notice that AI is supplementary and non-authoritative.
 
-### 3. AI Key Concepts & Simplified Explanations
-- Automatically identifies critical academic/scientific concepts from the lesson transcript.
-- Generates concise (1–3 sentences), age-appropriate simplified explanations using real-world analogies.
-- Directly connects each term to the specific timestamp/segment where the teacher introduced it.
-- **Clear AI Safety Disclaimer:** Every AI response is explicitly marked as supplementary and non-authoritative:
-  > *"AI Notice: Explanations are supplementary helper notes simplified for learning. They may contain small inaccuracies. Always verify with your teacher or the original lesson."*
+### 3. Smart Shortening & Core Concepts Mode
+- **Core Concepts Only Toggle:** Automatically detects essential segments (tagged with key scientific terms) and skips filler/background details with polite visual transition cues.
+- **Pre-Lesson Primer:** Short 2-3 sentence overview card that learners can read or listen to before watching the full lecture.
+- **Skip Silence Option:** Automatically detects long pauses or gaps between spoken phrases (> 1.2s) and jumps to the next sentence.
 
-### 4. Personalization & WCAG 2.2 AA Accessibility
-- **Text Size Adjustment:** Small, Medium, Large, Extra-Large.
-- **Video Captions Toggle:** Easily show or hide closed captions on video.
-- **High Contrast Mode:** High-contrast color palette, clear borders, and sharp typography.
-- **Minimal Distraction UI:** Ample whitespace, calming tones, no sudden pop-ups or autoplay distractions.
-- **Persistence:** Learner preferences are automatically saved in `localStorage`.
+### 4. Interactive Micro-learning Breaks
+- Detects natural break intervals (every ~4 minutes or at chapter transitions).
+- Displays gentle, non-intrusive pause card:
+  - **30-Second Sensory Pause:** Guided box-breathing circle (inhale, hold, exhale) with zero cognitive load.
+  - **Simpler Version:** One-click shortcut to have AI re-explain what was just said.
+  - **Quick Quiz Check:** Test comprehension before moving on.
+- **Auto-Saved Progress:** Automatically saves exact playback timestamp so students can resume anytime without losing their place.
 
-### 5. Teacher / Administrator Portal
+### 5. Focus Mode & Overwhelm Supports
+- **Focus Mode:** Dims peripheral panels and spotlights the active video and synchronized transcript sentence.
+- **"I'm Stuck / Overwhelmed" Button:** Prominent, calming lavender button that opens an emergency calm sheet with 4 panic-free choices:
+  1. Plain-English explanation of recent content
+  2. 1-sentence recap of the last 2 minutes
+  3. Guided 45-second breathing break
+  4. Instant 30-second rewind + slow down to 0.75x
+- **Calming Visual Themes:** Warm Sand (low blue-light amber), Sage Calm (relaxing green), Ocean Calm (soft blue), High Contrast (WCAG AA), and Default Slate.
+- **Reduced Motion:** Disables animations, pulsing badges, and transitions for vestibular comfort.
+
+### 6. Enhanced AI Utilities & Practice Quiz
+- **Multi-Level Explanations:** One-click "Explain like I'm 10", "Give an analogy", and "Explain more deeply".
+- **Practice Check Panel:** 3-5 interactive check questions with hints and hidden answers for stress-free self-testing.
+- **Selective Floating Toolbar:** Highlight any transcript sentence to instantly Explain, rephrase for age 10, generate an analogy, or listen aloud.
+
+### 7. Teacher / Administrator Portal
 - Upload authorized prerecorded videos (.mp4, .webm).
 - Automated background processing pipeline:
   1. Local video storage
@@ -180,15 +196,24 @@ npx tsx scripts/test-companion.ts
 
 Output:
 ```text
-=== Verifying Database & Models ===
-Users: 1
-Videos: 2
-Transcript Segments: 12
-Key Terms: 10
-=== Verifying Lesson Retrieval ===
+=== 1. Verifying Database & Extended Models ===
+Users: 1, Videos: 2, Transcript Segments: 12, Key Terms: 10, Chapters: 10, Practice Questions: 6
+
+=== 2. Verifying Lesson Retrieval with Chapters & Core Concepts ===
 Lesson: "Introduction to Photosynthesis: How Plants Make Food"
-=== Verifying AI Explanation Service ===
-All verification checks passed!
+Chapters count: 5 | Core Segments: 5 of 7 | Practice Questions seeded: 3
+
+=== 3. Verifying Multi-Mode AI Explanations ===
+[Simple Mode] | [Like 10 Mode] | [Analogy Mode] | [Deep Mode]
+
+=== 4. Verifying Conversational RAG AI Companion ===
+[Chat Query: "What do chloroplasts do?"] -> Grounded lesson explanation
+[Actions: confused, main-idea, summarize-recent] -> Grounded calm helpers
+
+=== 5. Verifying AI Summary & Practice Question Generators ===
+Summary & Practice quiz generation verified.
+
+All verification checks passed with 100% success!
 ```
 
 ## Learn More

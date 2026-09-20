@@ -23,6 +23,10 @@ export default async function LessonPage({ params }: LessonPageProps) {
       keyTerms: {
         orderBy: { term: 'asc' },
       },
+      chapters: {
+        orderBy: { index: 'asc' },
+      },
+      practiceQuestions: true,
     },
   })
 

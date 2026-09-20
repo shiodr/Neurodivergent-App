@@ -21,26 +21,31 @@ export function useKeyTerms(keyTerms: KeyTermData[]) {
     setExplainError(null)
   }, [])
 
-  const explainSelectedText = useCallback(async (text: string, videoId: string) => {
-    if (!text.trim()) return
-    setIsExplaining(true)
-    setExplainError(null)
-    setCustomExplanation(null)
+  const explainSelectedText = useCallback(
+    async (
+      text: string,
+      videoId: string,
+      mode: 'simple' | 'analogy' | 'deep' | 'age-10' = 'simple'
+    ) => {
+      if (!text.trim()) return
+      setIsExplaining(true)
+      setExplainError(null)
+      setCustomExplanation(null)
 
-    try {
-      const response = await fetch('/api/explain', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: text.trim(), videoId }),
-      })
+      try {
+        const response = await fetch('/api/explain', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: text.trim(), videoId, mode }),
+        })
 
-      if (!response.ok) {
-        throw new Error('Could not get explanation. Please try again.')
-      }
+        if (!response.ok) {
+          throw new Error('Could not get explanation. Please try again.')
+        }
 
-      const data = await response.json()
-      setCustomExplanation(data.explanation)
-    } catch (err) {
+        const data = await response.json()
+        setCustomExplanation(data.explanation)
+      } catch (err) {
       setExplainError(
         err instanceof Error ? err.message : 'Something went wrong. Please try again.'
       )

@@ -29,18 +29,22 @@ model Video {
   uploaderId  String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  segments    Segment[]
-  keyTerms    KeyTerm[]
+  summary           String?
+  segments          Segment[]
+  keyTerms          KeyTerm[]
+  chapters          Chapter[]
+  practiceQuestions PracticeQuestion[]
 }
 
 model Segment {
-  id        String @id @default(cuid())
+  id        String  @id @default(cuid())
   videoId   String
-  video     Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  video     Video   @relation(fields: [videoId], references: [id], onDelete: Cascade)
   startTime Float
   endTime   Float
   text      String
   index     Int
+  isCore    Boolean @default(true)
 }
 
 model KeyTerm {
@@ -51,4 +55,25 @@ model KeyTerm {
   explanation String
   segmentRef  Int?
   ageGroup    String @default("general")
+}
+
+model Chapter {
+  id        String @id @default(cuid())
+  videoId   String
+  video     Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  title     String
+  startTime Float
+  endTime   Float
+  index     Int
+}
+
+model PracticeQuestion {
+  id         String  @id @default(cuid())
+  videoId    String
+  video      Video   @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  question   String
+  answer     String
+  hint       String?
+  options    String?
+  segmentRef Int?
 }

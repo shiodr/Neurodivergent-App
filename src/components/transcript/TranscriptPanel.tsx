@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useRef, useEffect, useState } from 'react'
-import { Search, X, Sparkles, BookOpen } from 'lucide-react'
+import { Search, X, Sparkles, BookOpen, Volume2, Lightbulb, Compass } from 'lucide-react'
 import { TranscriptSegment } from './TranscriptSegment'
 import { Button } from '@/components/ui/button'
+import { speakText } from '@/lib/tts'
 import type { TranscriptSegment as SegmentType, KeyTermData, TextSize } from '@/types'
 
 interface TranscriptPanelProps {
@@ -15,7 +16,7 @@ interface TranscriptPanelProps {
   highContrast: boolean
   onSeek: (time: number) => void
   onSelectTerm: (term: KeyTermData) => void
-  onExplainSelection: (text: string) => void
+  onExplainSelection: (text: string, mode?: 'simple' | 'analogy' | 'deep' | 'age-10') => void
 }
 
 export function TranscriptPanel({
@@ -75,9 +76,17 @@ export function TranscriptPanel({
     }
   }
 
-  const handleExplainCurrentSelection = () => {
+  const handleExplainCurrentSelection = (mode: 'simple' | 'analogy' | 'deep' | 'age-10' = 'simple') => {
     if (selectedText) {
-      onExplainSelection(selectedText)
+      onExplainSelection(selectedText, mode)
+      setShowExplainButton(false)
+      window.getSelection()?.removeAllRanges()
+    }
+  }
+
+  const handleListenSelection = () => {
+    if (selectedText) {
+      speakText(selectedText)
       setShowExplainButton(false)
       window.getSelection()?.removeAllRanges()
     }
@@ -137,7 +146,7 @@ export function TranscriptPanel({
         </div>
       </div>
 
-      {/* Floating Explain Button for selected text */}
+      {/* Floating Action Toolbar for selected text */}
       {showExplainButton && selectionPosition && (
         <div
           style={{
@@ -147,16 +156,47 @@ export function TranscriptPanel({
             transform: 'translate(-50%, -100%)',
             zIndex: 9999,
           }}
-          className="animate-in fade-in zoom-in-90 duration-150 shadow-2xl"
+          className="animate-in fade-in zoom-in-90 duration-150 shadow-2xl bg-gray-900 text-white rounded-2xl p-1.5 flex items-center gap-1 border-2 border-white/40"
         >
-          <Button
-            size="sm"
-            onClick={handleExplainCurrentSelection}
-            className="bg-purple-700 hover:bg-purple-800 text-white font-bold gap-1.5 shadow-xl border-2 border-white"
+          <button
+            type="button"
+            onClick={() => handleExplainCurrentSelection('simple')}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition-all shadow-xs"
+            title="Explain this phrase simply"
           >
-            <Sparkles className="w-4 h-4 text-yellow-300" />
-            Explain &ldquo;{selectedText.slice(0, 18)}...&rdquo;
-          </Button>
+            <Sparkles className="w-3.5 h-3.5 text-yellow-300" />
+            <span>Explain</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleExplainCurrentSelection('age-10')}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-500 hover:bg-amber-600 text-black text-xs font-bold transition-all shadow-xs"
+            title="Explain like I am 10"
+          >
+            <Lightbulb className="w-3.5 h-3.5" />
+            <span>Like 10</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleExplainCurrentSelection('analogy')}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-xs"
+            title="Explain using an everyday analogy"
+          >
+            <Compass className="w-3.5 h-3.5" />
+            <span>Analogy</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleListenSelection}
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-xs"
+            title="Listen to selected text"
+          >
+            <Volume2 className="w-3.5 h-3.5" />
+            <span>Listen</span>
+          </button>
         </div>
       )}
 

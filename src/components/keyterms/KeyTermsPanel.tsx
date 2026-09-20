@@ -9,9 +9,13 @@ import {
   X,
   Loader2,
   BookmarkCheck,
+  Volume2,
+  VolumeX,
+  Compass,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { speakText, stopSpeech, isCurrentlySpeaking } from '@/lib/tts'
 import type { KeyTermData } from '@/types'
 
 interface KeyTermsPanelProps {
@@ -24,6 +28,7 @@ interface KeyTermsPanelProps {
   onSelectTerm: (term: KeyTermData) => void
   onClearSelection: () => void
   onJumpToSegment?: (segmentIndex: number) => void
+  onExplainMore?: (text: string, mode: 'simple' | 'analogy' | 'deep' | 'age-10') => void
 }
 
 export function KeyTermsPanel({
@@ -36,6 +41,7 @@ export function KeyTermsPanel({
   onSelectTerm,
   onClearSelection,
   onJumpToSegment,
+  onExplainMore,
 }: KeyTermsPanelProps) {
   return (
     <section
@@ -97,7 +103,7 @@ export function KeyTermsPanel({
 
         {/* On-demand Custom Explanation Display */}
         {customExplanation && !isExplaining && (
-          <div className="p-4 rounded-xl bg-purple-100/80 border-2 border-purple-400 text-purple-950 relative shadow-sm">
+          <div className="p-4 rounded-xl bg-purple-100/80 border-2 border-purple-400 text-purple-950 relative shadow-sm space-y-2">
             <button
               onClick={onClearSelection}
               className="absolute top-3 right-3 p-1 rounded-md text-purple-700 hover:bg-purple-200"
@@ -105,7 +111,7 @@ export function KeyTermsPanel({
             >
               <X className="w-4 h-4" />
             </button>
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2">
               <Lightbulb className="w-4 h-4 text-purple-700" />
               <h3 className="font-bold text-sm uppercase tracking-wide text-purple-900">
                 Custom Selection Explained
@@ -114,16 +120,26 @@ export function KeyTermsPanel({
             <p className="text-sm sm:text-base leading-relaxed font-medium">
               {customExplanation}
             </p>
+            <div className="pt-2 flex items-center gap-2 border-t border-purple-200">
+              <button
+                type="button"
+                onClick={() => speakText(customExplanation)}
+                className="inline-flex items-center gap-1 text-xs font-bold text-purple-900 bg-white px-2.5 py-1 rounded-lg border border-purple-300 hover:bg-purple-50 shadow-xs"
+              >
+                <Volume2 className="w-3.5 h-3.5 text-purple-700" />
+                <span>Listen</span>
+              </button>
+            </div>
           </div>
         )}
 
         {/* Selected Term Detail Card */}
         {selectedTerm && (
           <div
-            className={`p-4 sm:p-5 rounded-xl border-2 relative transition-all ${
+            className={`p-4 sm:p-5 rounded-2xl border-2 relative transition-all space-y-3 ${
               highContrast
                 ? 'bg-yellow-50 border-black text-black'
-                : 'bg-blue-50 border-blue-400 text-blue-950'
+                : 'bg-blue-50/80 border-blue-400 text-blue-950'
             }`}
           >
             <button
@@ -134,26 +150,67 @@ export function KeyTermsPanel({
               <X className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2">
               <BookmarkCheck className="w-5 h-5 text-blue-600" />
               <h3 className="text-lg font-extrabold">{selectedTerm.term}</h3>
             </div>
 
-            <p className="text-sm sm:text-base leading-relaxed text-gray-900 font-medium mb-4">
+            <p className="text-sm sm:text-base leading-relaxed text-gray-900 font-medium">
               {selectedTerm.explanation}
             </p>
 
-            {selectedTerm.segmentRef !== null && selectedTerm.segmentRef !== undefined && (
-              <Button
-                size="sm"
-                variant="default"
-                onClick={() => onJumpToSegment?.(selectedTerm.segmentRef!)}
-                className="font-bold text-xs gap-1.5"
-              >
-                <PlayCircle className="w-4 h-4" />
-                Jump to Lesson Explanation
-              </Button>
+            {/* Quick multi-level explanation options */}
+            {onExplainMore && (
+              <div className="pt-2 flex flex-wrap gap-1.5 border-t border-blue-200/60">
+                <button
+                  type="button"
+                  onClick={() => onExplainMore(selectedTerm.term, 'age-10')}
+                  className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-blue-200 hover:bg-blue-100 text-blue-900"
+                >
+                  <Lightbulb className="w-3 h-3 text-amber-500" />
+                  <span>Explain like I&apos;m 10</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onExplainMore(selectedTerm.term, 'analogy')}
+                  className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-blue-200 hover:bg-blue-100 text-blue-900"
+                >
+                  <Compass className="w-3 h-3 text-blue-500" />
+                  <span>Give an Analogy</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onExplainMore(selectedTerm.term, 'deep')}
+                  className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-blue-200 hover:bg-blue-100 text-blue-900"
+                >
+                  <Sparkles className="w-3 h-3 text-purple-500" />
+                  <span>Explain more deeply</span>
+                </button>
+              </div>
             )}
+
+            <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-blue-200/60">
+              <button
+                type="button"
+                onClick={() => speakText(`${selectedTerm.term}. ${selectedTerm.explanation}`)}
+                className="inline-flex items-center gap-1 text-xs font-bold text-blue-900 bg-white px-2.5 py-1 rounded-lg border border-blue-300 hover:bg-blue-100 shadow-xs"
+              >
+                <Volume2 className="w-3.5 h-3.5 text-blue-700" />
+                <span>Listen to Definition</span>
+              </button>
+
+              {selectedTerm.segmentRef !== null && selectedTerm.segmentRef !== undefined && (
+                <Button
+                  size="sm"
+                  variant="default"
+                  onClick={() => onJumpToSegment?.(selectedTerm.segmentRef!)}
+                  className="font-bold text-xs gap-1.5 h-8"
+                >
+                  <PlayCircle className="w-4 h-4" />
+                  Jump to Lesson Segment
+                </Button>
+              )}
+            </div>
           </div>
         )}
 

@@ -5,7 +5,7 @@ import { explainTextWithAI } from '@/lib/ai'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { text, videoId } = body
+    const { text, videoId, mode = 'simple' } = body
 
     if (!text || typeof text !== 'string' || text.trim() === '') {
       return NextResponse.json({ error: 'Text is required for explanation.' }, { status: 400 })
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
         where: { id: videoId },
         include: {
           segments: {
-            take: 5,
+            take: 8,
           },
         },
       })
@@ -30,11 +30,12 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const explanation = await explainTextWithAI(text, lessonTitle, lessonContext)
+    const explanation = await explainTextWithAI(text, lessonTitle, lessonContext, mode)
 
     return NextResponse.json({
       term: text,
       explanation,
+      mode,
     })
   } catch (error) {
     console.error('Explain API error:', error)
