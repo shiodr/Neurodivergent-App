@@ -64,40 +64,59 @@ This project is built with [Next.js](https://nextjs.org), bootstrapped with [`cr
 
 | Layer | Technology |
 |---|---|
-| **Framework** | Next.js 14 (App Router) + TypeScript |
-| **Styling** | Tailwind CSS + Accessible Radix UI Primitives |
-| **Database** | SQLite + Prisma ORM (zero-config local setup) |
-| **Authentication** | NextAuth.js (Credentials Provider for Teachers) |
-| **Speech Recognition (ASR)** | OpenAI Whisper API (with built-in offline fallback) |
-| **AI LLM** | OpenAI GPT-4o-mini (with built-in offline fallback) |
-| **Storage** | Local disk storage (`public/uploads/`) |
+| **Backend Framework** | Python 3 + Flask (with Jinja2 templates & REST API) |
+| **Authentication** | Session-based Auth with PBKDF2 Password Hashing (Teacher Portal) |
+| **Student Access** | Passwordless Student Access Code System (provided by Teacher) |
+| **Cloud Database** | Firebase Firestore (`neurodivergent-app-15a25`) with resilient local fallback |
+| **Hosting** | Firebase Hosting & Containerized Cloud Hosting (`firebase.json`, `Dockerfile`, `Procfile`, `apphosting.yaml`) |
+| **Styling & Accessibility** | Responsive Accessible UI with Calming Themes (Sage Calm, Warm Sand, Ocean Calm, High Contrast) |
 
-## Getting Started
+## Quick Start (Python Flask)
 
-### Prerequisites
-- Node.js v18+ (tested on Node v20/v26)
-- npm or yarn
+### 1. Prerequisites
+- Python 3.9+ (tested on Python 3.9 / 3.11 / 3.12)
+- Firebase CLI (for deployment to `neurodivergent-app-15a25`)
 
-### 1. Clone and Install Dependencies
+### 2. Run the Application
+You can start the Flask application with one command:
 ```bash
-git clone https://github.com/shiodr/Neurodivergent-App.git
-cd Neurodivergent-App
-npm install
+./scripts/run_flask.sh
 ```
-
-### 2. Configure Environment Variables
-Copy `.env.example` to `.env`:
+Or manually:
 ```bash
-cp .env.example .env
+python3 -m venv venv
+./venv/bin/pip install -r requirements.txt
+./venv/bin/python3 app.py
 ```
+Open [http://127.0.0.1:5001](http://127.0.0.1:5001) in your browser.
 
-Default `.env` configuration:
-```env
-# Database
-DATABASE_URL="file:./dev.db"
+### 3. Teacher Portal & Student Codes
+- **Teacher Login**: [http://127.0.0.1:5001/login](http://127.0.0.1:5001/login)
+  - Default Demo Email: `teacher@school.edu`
+  - Default Demo Password: `teacher123`
+- **Teacher Signup**: [http://127.0.0.1:5001/signup](http://127.0.0.1:5001/signup)
+  - Allows registering new teacher accounts and setting a primary student code.
+- **Student Access Code**:
+  - Teachers generate or copy their student code (e.g. `BIO-101`, `EARTH-2026`, `MATH-5A`) from their dashboard.
+  - Students enter this code on the home page to immediately unlock their teacher's assigned lessons.
 
-# NextAuth
-NEXTAUTH_URL="http://localhost:3000"
+### 4. Operations Supported
+- **CREATE**: Teachers can add lessons (`/teacher/lessons/new`) with titles, subjects, student codes, video URLs, key terms, and transcripts.
+- **READ**: View all lessons or open the accessible player (`/lesson/<id>`).
+- **UPDATE**: Edit lessons (`/teacher/lessons/<id>/edit`).
+- **DELETE**: Delete lessons (`/teacher/lessons/<id>/delete`).
+- **QUERY**: Search bar matching titles, descriptions, and key terms.
+- **FILTERING**: Filter by Subject (Science, Math, English, etc.) and Grade Level.
+- **SORTING**: Sort by Newest, Oldest, Title (A-Z), Title (Z-A), or Duration.
+- **INPUT VALIDATION**: Server-side validation for emails, password length, and lesson attributes with user-friendly alerts.
+
+### 5. Firebase Online Hosting Deployment
+To deploy web assets to Firebase Hosting:
+```bash
+firebase login
+firebase deploy --only hosting
+```
+Configured for Firebase project: `neurodivergent-app-15a25`.
 NEXTAUTH_SECRET="neurodivergent-app-secret-super-key-32chars-min"
 
 # Optional: Add your OpenAI API key for live Whisper ASR and GPT-4o-mini explanations

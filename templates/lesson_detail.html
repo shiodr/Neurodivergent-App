@@ -1,0 +1,445 @@
+{% extends "base.html" %}
+
+{% block title %}{{ lesson.title }} - Lesson Companion{% endblock %}
+
+{% block extra_head %}
+<style>
+  .lesson-layout {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 1.75rem;
+    margin-top: 1rem;
+  }
+  @media (max-width: 960px) {
+    .lesson-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+  .video-container {
+    background: #000000;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow-md);
+  }
+  video {
+    width: 100%;
+    display: block;
+    max-height: 480px;
+    background: #000000;
+  }
+  .player-toolbar {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 0.75rem 1rem;
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .speed-pills {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .speed-btn {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 0.25rem 0.55rem;
+    border-radius: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .speed-btn.active {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+  }
+  .transcript-box {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+    max-height: 420px;
+    overflow-y: auto;
+  }
+  .segment-line {
+    padding: 0.65rem 0.85rem;
+    border-radius: 0.65rem;
+    margin-bottom: 0.4rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: flex;
+    gap: 0.75rem;
+  }
+  .segment-line:hover {
+    background: var(--bg-elevated);
+  }
+  .segment-line.active {
+    background: var(--primary-light);
+    border-left: 4px solid var(--primary);
+    font-weight: 700;
+  }
+  .segment-time {
+    font-size: 0.75rem;
+    font-family: monospace;
+    font-weight: 700;
+    color: var(--text-muted);
+    min-width: 45px;
+    padding-top: 2px;
+  }
+  .sidebar-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .key-term-item {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    border-radius: 0.65rem;
+    margin-bottom: 0.6rem;
+  }
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 1rem;
+    backdrop-filter: blur(4px);
+  }
+  .modal-card {
+    background: var(--bg-card);
+    border: 3px solid var(--accent-calm);
+    border-radius: var(--radius-xl);
+    max-width: 520px;
+    width: 100%;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Back Nav & Lesson Header -->
+<div style="margin-bottom: 1rem;">
+  <a href="{{ url_for('index') }}" class="btn btn-secondary btn-sm" style="margin-bottom: 0.75rem;">
+    &larr; Back to Lessons
+  </a>
+  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+    <span class="badge badge-subject">{{ lesson.subject }}</span>
+    <span class="badge">{{ lesson.grade_level }}</span>
+    <span class="badge badge-code">Class Code: {{ lesson.student_code }}</span>
+    <span class="badge">Teacher: {{ lesson.teacher_name }}</span>
+  </div>
+  <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">{{ lesson.title }}</h1>
+  {% if lesson.summary %}
+    <p style="color: var(--text-muted); font-size: 1rem; margin-top: 0; max-width: 900px;">
+      {{ lesson.summary }}
+    </p>
+  {% endif %}
+</div>
+
+<!-- Lesson Interactive Layout -->
+<div class="lesson-layout">
+  <!-- Left Column: Video & Synchronized Transcripts -->
+  <div>
+    <!-- Video Player -->
+    <div class="video-container">
+      <video id="lessonVideo" playsinline preload="metadata">
+        <source src="{{ lesson.video_url }}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <!-- Accessible Controls Toolbar -->
+    <div class="player-toolbar">
+      <!-- Playback Speed Controls -->
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">SPEED:</span>
+        <div class="speed-pills">
+          <button type="button" class="speed-btn" onclick="setSpeed(0.5)">0.5x</button>
+          <button type="button" class="speed-btn" onclick="setSpeed(0.75)">0.75x</button>
+          <button type="button" class="speed-btn active" onclick="setSpeed(1.0)">1.0x</button>
+          <button type="button" class="speed-btn" onclick="setSpeed(1.25)">1.25x</button>
+          <button type="button" class="speed-btn" onclick="setSpeed(1.5)">1.5x</button>
+        </div>
+      </div>
+
+      <!-- Quick Seek Buttons -->
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="seekRelative(-10)">
+          ↺ -10s
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="seekRelative(10)">
+          +10s ↻
+        </button>
+      </div>
+
+      <!-- Emergency Sensory Pause Button -->
+      <button type="button" class="btn btn-calm btn-sm" onclick="openCalmModal()">
+        💜 Sensory Pause
+      </button>
+    </div>
+
+    <!-- Synchronized Clickable Transcript Box -->
+    <div class="transcript-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+        <h3 style="margin: 0; font-size: 1.15rem;">Synchronized Transcript</h3>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Click any sentence to jump</span>
+      </div>
+
+      <div id="transcriptLines">
+        {% for seg in lesson.segments %}
+          <div
+            class="segment-line"
+            id="seg-{{ seg.index }}"
+            data-start="{{ seg.startTime }}"
+            data-end="{{ seg.endTime }}"
+            onclick="jumpToTime({{ seg.startTime }})"
+            tabindex="0"
+            role="button"
+            aria-label="Seek to {{ seg.startTime }} seconds: {{ seg.text }}"
+          >
+            <span class="segment-time">
+              {{ (seg.startTime // 60)|int }}:{{ "%02d"|format((seg.startTime % 60)|int) }}
+            </span>
+            <span class="segment-text">{{ seg.text }}</span>
+          </div>
+        {% else %}
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            No timestamped transcript segments recorded for this lesson.
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Key Terms Glossary, AI Companion & Practice Check -->
+  <div>
+    <!-- Key Terms Glossary Card -->
+    <div class="sidebar-card">
+      <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem;">Key Terms & Definitions</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">
+        Simplified explanations for tricky words in this lesson.
+      </p>
+
+      {% for term in lesson.key_terms %}
+        <div class="key-term-item">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: var(--primary); font-size: 0.95rem;">{{ term.term }}</strong>
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              style="padding: 0.2rem 0.5rem; font-size: 0.75rem;"
+              onclick="speakText('{{ term.term }}. {{ term.explanation }}')"
+              title="Read aloud"
+              aria-label="Listen to definition"
+            >
+              🔊 Listen
+            </button>
+          </div>
+          <p style="margin: 0.35rem 0 0 0; font-size: 0.85rem; color: var(--text-main); line-height: 1.4;">
+            {{ term.explanation }}
+          </p>
+        </div>
+      {% else %}
+        <p style="color: var(--text-muted); font-size: 0.85rem;">No key terms defined yet.</p>
+      {% endfor %}
+    </div>
+
+    <!-- AI Study Companion Card -->
+    <div class="sidebar-card" style="border-color: var(--accent-calm);">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+        <span style="background: var(--accent-calm); color: #fff; border-radius: 0.4rem; padding: 0.15rem 0.45rem; font-size: 0.75rem; font-weight: 800;">
+          AI
+        </span>
+        <h3 style="font-size: 1.15rem; margin: 0;">Study Companion</h3>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;">
+        Get an instant simplified explanation or everyday analogy.
+      </p>
+
+      <!-- Quick Prompt Chips -->
+      <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="askAiPrompt('ten_year_old')">
+          💡 Explain Like I'm 10
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="askAiPrompt('analogy')">
+          🍕 Everyday Analogy
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="askAiPrompt('summary')">
+          ⚡ 1-Sentence Recap
+        </button>
+      </div>
+
+      <div id="aiResponseBox" style="display: none; background: var(--bg-elevated); border: 1px solid var(--accent-calm); border-radius: 0.65rem; padding: 0.85rem; font-size: 0.9rem; line-height: 1.5;">
+        <div id="aiText" style="color: var(--text-main);"></div>
+      </div>
+    </div>
+
+    <!-- Practice Quiz Check -->
+    {% if lesson.practice_questions %}
+      <div class="sidebar-card">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.25rem;">Quick Practice Check</h3>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;">
+          Low-stress check to see what you learned.
+        </p>
+
+        {% for pq in lesson.practice_questions %}
+          <div style="background: var(--bg-elevated); border: 1px solid var(--border-color); padding: 0.75rem; border-radius: 0.65rem; margin-bottom: 0.65rem;">
+            <p style="margin: 0 0 0.5rem 0; font-weight: 700; font-size: 0.9rem;">
+              {{ loop.index }}. {{ pq.question }}
+            </p>
+            {% if pq.hint %}
+              <details style="font-size: 0.8rem; margin-bottom: 0.4rem; color: var(--text-muted);">
+                <summary style="cursor: pointer; font-weight: 600;">Show Hint</summary>
+                <p style="margin: 0.25rem 0; font-style: italic;">{{ pq.hint }}</p>
+              </details>
+            {% endif %}
+            <details style="font-size: 0.85rem; color: var(--success);">
+              <summary style="cursor: pointer; font-weight: 700;">Reveal Answer</summary>
+              <p style="margin: 0.25rem 0; font-weight: 800;">Answer: {{ pq.answer }}</p>
+            </details>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Sensory Pause Modal (Guided Box Breathing for Neurodivergent Learners) -->
+<div id="calmModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="calmTitle">
+  <div class="modal-card">
+    <h2 id="calmTitle" style="color: var(--accent-calm); margin-bottom: 0.25rem;">
+      Guided Sensory Pause
+    </h2>
+    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">
+      Take a 30-second breather. Follow the circle: Inhale, Hold, Exhale, Rest.
+    </p>
+
+    <!-- Animated Breathing Circle -->
+    <div class="breathing-box" id="breatheText">
+      Breathe
+    </div>
+
+    <div style="margin-top: 1.5rem; display: flex; justify-content: center; gap: 0.75rem;">
+      <button type="button" class="btn btn-secondary" onclick="closeCalmModal()">
+        I'm Ready to Resume
+      </button>
+      <button type="button" class="btn btn-calm" onclick="seekRelative(-30); closeCalmModal();">
+        Rewind 30s & Resume
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const video = document.getElementById('lessonVideo');
+  const segments = document.querySelectorAll('.segment-line');
+
+  // Video Speed Controller
+  function setSpeed(rate) {
+    if (!video) return;
+    video.playbackRate = rate;
+    document.querySelectorAll('.speed-btn').forEach(btn => {
+      btn.classList.toggle('active', parseFloat(btn.textContent) === rate);
+    });
+  }
+
+  // Seek relative
+  function seekRelative(seconds) {
+    if (!video) return;
+    video.currentTime = Math.max(0, Math.min(video.duration || 1000, video.currentTime + seconds));
+  }
+
+  // Jump to specific time
+  function jumpToTime(seconds) {
+    if (!video) return;
+    video.currentTime = seconds;
+    video.play();
+  }
+
+  // Real-time transcript synchronized highlighting
+  if (video) {
+    video.addEventListener('timeupdate', () => {
+      const cur = video.currentTime;
+      segments.forEach(seg => {
+        const start = parseFloat(seg.getAttribute('data-start'));
+        const end = parseFloat(seg.getAttribute('data-end'));
+        const isActive = cur >= start && cur <= end;
+        seg.classList.toggle('active', isActive);
+        if (isActive) {
+          // Scroll into view gently if needed
+          seg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+    });
+  }
+
+  // Web Speech API for Text-to-Speech
+  function speakText(text) {
+    if (!('speechSynthesis' in window)) {
+      alert("Text-to-speech is not supported in this browser.");
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // AI Explanation API caller
+  function askAiPrompt(mode) {
+    const box = document.getElementById('aiResponseBox');
+    const txt = document.getElementById('aiText');
+    const lessonTitle = {{ lesson.title|tojson }};
+    const summary = {{ (lesson.summary or lesson.description)|tojson }};
+
+    box.style.display = 'block';
+    txt.innerHTML = '<em>Generating simplified explanation...</em>';
+
+    fetch('/api/explain', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text: lessonTitle + ': ' + summary,
+        mode: mode
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      txt.textContent = data.explanation || "Could not generate explanation.";
+    })
+    .catch(() => {
+      txt.textContent = "Offline helper: This lesson breaks concepts into easy steps so you can learn at your own pace.";
+    });
+  }
+
+  // Sensory Pause Modal
+  function openCalmModal() {
+    if (video && !video.paused) video.pause();
+    document.getElementById('calmModal').style.display = 'flex';
+  }
+  function closeCalmModal() {
+    document.getElementById('calmModal').style.display = 'none';
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}Accessible Lessons - Neurodivergent Lesson Companion{% endblock %}
+
+{% block content %}
+<!-- Student Code Hero Banner -->
+<section class="code-hero-card" role="region" aria-label="Student Code Entry">
+  <div style="max-width: 700px;">
+    <span class="badge" style="background: rgba(255,255,255,0.2); color: #ffffff; border: none; text-transform: uppercase; font-weight: 800; font-size: 0.75rem; letter-spacing: 0.05em;">
+      Student Fast Access
+    </span>
+    <h1 style="font-size: 2.2rem; margin-top: 0.5rem; margin-bottom: 0.25rem;">
+      Enter Your Teacher's Class Code
+    </h1>
+    <p style="font-size: 1.05rem; opacity: 0.95;">
+      Did your teacher give you a classroom code? Type it below to instantly access your authorized video lessons without needing passwords or accounts.
+    </p>
+
+    <form action="{{ url_for('set_student_code') }}" method="POST" class="code-input-form">
+      <label for="student_code_input" class="sr-only">Student Code</label>
+      <input
+        type="text"
+        id="student_code_input"
+        name="student_code"
+        placeholder="e.g. BIO-101"
+        value="{{ active_student_code or '' }}"
+        required
+      >
+      <button type="submit" class="btn btn-primary" style="background: #10b981; border: none; font-weight: 800;">
+        Unlock Lessons
+      </button>
+    </form>
+
+    <!-- Quick Code Chips for Quick Testing -->
+    <div style="margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; font-size: 0.85rem;">
+      <span style="opacity: 0.85;">Sample Class Codes:</span>
+      {% for code in available_student_codes %}
+        <a href="{{ url_for('index', code=code) }}" class="badge badge-code" style="text-decoration: none; cursor: pointer;">
+          {{ code }}
+        </a>
+      {% endfor %}
+      {% if active_student_code %}
+        <a href="{{ url_for('clear_student_code') }}" style="color: #fca5a5; font-weight: 700; margin-left: 0.5rem;">
+          ✕ Show All Lessons
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Active Filter Notice Banner -->
+{% if active_student_code %}
+  <div style="background: var(--bg-card); border-left: 5px solid var(--accent-calm); padding: 1rem 1.25rem; border-radius: 0.75rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div>
+      <span style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; color: var(--accent-calm);">Student Code Active</span>
+      <h3 style="margin: 0.2rem 0 0 0; font-size: 1.15rem;">
+        Displaying lessons for class code: <strong style="color: var(--primary);">{{ active_student_code }}</strong>
+      </h3>
+    </div>
+    <a href="{{ url_for('clear_student_code') }}" class="btn btn-secondary btn-sm">
+      View All Available Lessons
+    </a>
+  </div>
+{% endif %}
+
+<!-- Search, Filtering, and Sorting Controls -->
+<section class="filter-bar" role="search" aria-label="Search and filter lessons">
+  <form action="{{ url_for('index') }}" method="GET" class="filter-grid">
+    {% if active_student_code %}
+      <input type="hidden" name="code" value="{{ active_student_code }}">
+    {% endif %}
+
+    <!-- 1. Query Search -->
+    <div class="form-group">
+      <label for="q">Search Lesson or Keyword</label>
+      <input
+        type="text"
+        id="q"
+        name="q"
+        class="form-control"
+        placeholder="Search title, term, or concept..."
+        value="{{ search_query }}"
+      >
+    </div>
+
+    <!-- 2. Subject Filter -->
+    <div class="form-group">
+      <label for="subject">Filter by Subject</label>
+      <select id="subject" name="subject" class="form-control">
+        <option value="All" {% if filter_subject == 'All' %}selected{% endif %}>All Subjects</option>
+        {% for subj in all_subjects %}
+          <option value="{{ subj }}" {% if filter_subject == subj %}selected{% endif %}>{{ subj }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- 3. Grade Level Filter -->
+    <div class="form-group">
+      <label for="grade">Filter by Grade</label>
+      <select id="grade" name="grade" class="form-control">
+        <option value="All" {% if filter_grade == 'All' %}selected{% endif %}>All Grades</option>
+        <option value="Elementary" {% if filter_grade == 'Elementary' %}selected{% endif %}>Elementary (Grades 3-5)</option>
+        <option value="Middle School" {% if filter_grade == 'Middle School' %}selected{% endif %}>Middle School (Grades 6-8)</option>
+        <option value="High School" {% if filter_grade == 'High School' %}selected{% endif %}>High School (Grades 9-12)</option>
+      </select>
+    </div>
+
+    <!-- 4. Sorting -->
+    <div class="form-group">
+      <label for="sort">Sort Lessons</label>
+      <select id="sort" name="sort" class="form-control">
+        <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+        <option value="oldest" {% if sort_by == 'oldest' %}selected{% endif %}>Oldest First</option>
+        <option value="title_asc" {% if sort_by == 'title_asc' %}selected{% endif %}>Title (A to Z)</option>
+        <option value="title_desc" {% if sort_by == 'title_desc' %}selected{% endif %}>Title (Z to A)</option>
+        <option value="duration_desc" {% if sort_by == 'duration_desc' %}selected{% endif %}>Longest First</option>
+        <option value="duration_asc" {% if sort_by == 'duration_asc' %}selected{% endif %}>Shortest First</option>
+      </select>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div style="display: flex; gap: 0.5rem;">
+      <button type="submit" class="btn btn-primary" style="height: 42px;">
+        Filter
+      </button>
+      <a href="{{ url_for('index') }}" class="btn btn-secondary" style="height: 42px;" title="Reset search and filters">
+        Reset
+      </a>
+    </div>
+  </form>
+</section>
+
+<!-- Lessons Section Header -->
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.25rem;">
+  <div>
+    <h2 style="font-size: 1.6rem; margin-bottom: 0.2rem;">Classroom Recorded Lessons</h2>
+    <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
+      Select any lesson below to view with synchronized captions, speed adjustments, and instant explanations.
+    </p>
+  </div>
+  <span class="badge" style="font-size: 0.85rem; padding: 0.35rem 0.75rem;">
+    {{ lessons|length }} lesson(s) found
+  </span>
+</div>
+
+<!-- Lessons Cards Grid -->
+{% if lessons %}
+  <div class="lessons-grid">
+    {% for lesson in lessons %}
+      <article class="lesson-card">
+        <!-- Visual Thumbnail Header -->
+        <div class="card-thumbnail">
+          <div class="play-icon">▶</div>
+          <span class="duration-badge">
+            {{ (lesson.duration // 60)|int }}:{{ "%02d"|format((lesson.duration % 60)|int) }}
+          </span>
+        </div>
+
+        <!-- Card Content -->
+        <div class="card-body">
+          <div class="card-badges">
+            <span class="badge badge-subject">{{ lesson.subject }}</span>
+            <span class="badge">{{ lesson.grade_level }}</span>
+            <span class="badge badge-code" title="Teacher Student Code">
+              Code: {{ lesson.student_code }}
+            </span>
+          </div>
+
+          <h3>{{ lesson.title }}</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1rem;">
+            {{ lesson.description }}
+          </p>
+
+          <div class="card-footer">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">
+              {{ lesson.key_terms|length }} key terms
+            </span>
+
+            <a href="{{ url_for('lesson_detail', lesson_id=lesson.id) }}" class="btn btn-primary btn-sm">
+              Open Lesson &rarr;
+            </a>
+          </div>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% else %}
+  <!-- Empty State -->
+  <div style="text-align: center; padding: 4rem 1.5rem; background: var(--bg-card); border: 2px dashed var(--border-color); border-radius: var(--radius-xl); margin-bottom: 3rem;">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
+    <h3 style="font-size: 1.35rem; margin-bottom: 0.5rem;">No Lessons Found</h3>
+    <p style="color: var(--text-muted); max-width: 480px; margin: 0 auto 1.5rem;">
+      No lessons matched your current search, filter, or student code. Try changing your filters, clearing your search query, or logging into the Teacher's Portal to add new lesson content.
+    </p>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+      Clear All Filters
+    </a>
+    {% if current_user %}
+      <a href="{{ url_for('lesson_create') }}" class="btn btn-primary" style="margin-left: 0.5rem;">
+        + Create New Lesson
+      </a>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}

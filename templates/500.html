@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - Neurodivergent Lesson Companion{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 4rem auto; text-align: center; background: var(--bg-card); border: 2px solid var(--border-color); border-radius: var(--radius-xl); padding: 3rem 2rem; box-shadow: var(--shadow-sm);">
+  <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">⚙️</div>
+  <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">500</h1>
+  <h2 style="font-size: 1.3rem; margin-bottom: 1rem; color: var(--text-main);">
+    {{ message or "A temporary glitch occurred on the server." }}
+  </h2>
+  <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem;">
+    Our system has been notified. You can safely return to the main lessons list.
+  </p>
+  <a href="{{ url_for('index') }}" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">
+    &larr; Return to All Lessons
+  </a>
+</div>
+{% endblock %}

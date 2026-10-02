@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if action == 'create' %}Create New Lesson{% else %}Edit Lesson: {{ lesson.title }}{% endif %} - Neurodivergent Lesson Companion
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 1.5rem auto;">
+  <div style="background: var(--bg-card); border: 2px solid var(--border-color); border-radius: var(--radius-xl); padding: 2rem; box-shadow: var(--shadow-md);">
+    <!-- Back to Dashboard -->
+    <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-secondary btn-sm" style="margin-bottom: 1.25rem;">
+      &larr; Back to Teacher Dashboard
+    </a>
+
+    <div style="margin-bottom: 1.5rem;">
+      <span class="badge" style="background: var(--primary-light); color: var(--primary); font-weight: 800;">
+        {% if action == 'create' %}CREATE OPERATION{% else %}UPDATE OPERATION{% endif %}
+      </span>
+      <h1 style="font-size: 1.8rem; margin: 0.35rem 0 0.25rem 0;">
+        {% if action == 'create' %}Upload & Create New Lesson{% else %}Edit Lesson Details{% endif %}
+      </h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+        Set lesson metadata, transcript sentences, simplified definitions, and the student access code.
+      </p>
+    </div>
+
+    <form
+      action="{% if action == 'create' %}{{ url_for('lesson_create') }}{% else %}{{ url_for('lesson_edit', lesson_id=lesson.id) }}{% endif %}"
+      method="POST"
+      style="display: flex; flex-direction: column; gap: 1.25rem;"
+    >
+      <!-- Title -->
+      <div class="form-group">
+        <label for="title">Lesson Title *</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          class="form-control"
+          placeholder="e.g. Introduction to Photosynthesis: How Plants Make Food"
+          value="{{ form_data.title or '' }}"
+          required
+        >
+      </div>
+
+      <!-- Grid for Subject, Grade, Student Code -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label for="subject">Subject *</label>
+          <select id="subject" name="subject" class="form-control" required>
+            <option value="Science" {% if form_data.subject == 'Science' %}selected{% endif %}>Science</option>
+            <option value="Mathematics" {% if form_data.subject == 'Mathematics' %}selected{% endif %}>Mathematics</option>
+            <option value="English" {% if form_data.subject == 'English' %}selected{% endif %}>English</option>
+            <option value="History" {% if form_data.subject == 'History' %}selected{% endif %}>History</option>
+            <option value="Art" {% if form_data.subject == 'Art' %}selected{% endif %}>Art</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="grade_level">Grade Level *</label>
+          <select id="grade_level" name="grade_level" class="form-control" required>
+            <option value="Elementary" {% if form_data.grade_level == 'Elementary' %}selected{% endif %}>Elementary (Grades 3-5)</option>
+            <option value="Middle School" {% if form_data.grade_level == 'Middle School' %}selected{% endif %}>Middle School (Grades 6-8)</option>
+            <option value="High School" {% if form_data.grade_level == 'High School' %}selected{% endif %}>High School (Grades 9-12)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="student_code">
+            Student Access Code *
+          </label>
+          <input
+            type="text"
+            id="student_code"
+            name="student_code"
+            class="form-control"
+            placeholder="e.g. BIO-101"
+            value="{{ form_data.student_code or current_user.student_code }}"
+            style="text-transform: uppercase;"
+            required
+          >
+        </div>
+      </div>
+
+      <!-- Video URL and Duration -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label for="video_url">Video File or URL *</label>
+          <input
+            type="text"
+            id="video_url"
+            name="video_url"
+            class="form-control"
+            placeholder="/samples/photosynthesis.mp4"
+            value="{{ form_data.video_url or '/samples/photosynthesis.mp4' }}"
+            required
+          >
+          <small style="color: var(--text-muted); font-size: 0.78rem;">
+            Sample files available: <code>/samples/photosynthesis.mp4</code> or <code>/samples/water-cycle.mp4</code>
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="duration">Duration (Seconds) *</label>
+          <input
+            type="number"
+            id="duration"
+            name="duration"
+            class="form-control"
+            placeholder="180"
+            value="{{ form_data.duration or '180' }}"
+            min="1"
+            step="1"
+            required
+          >
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group">
+        <label for="description">Short Description / Overview</label>
+        <textarea
+          id="description"
+          name="description"
+          class="form-control"
+          rows="2"
+          placeholder="Brief 1-2 sentence overview of what is covered in this lesson..."
+        >{{ form_data.description or '' }}</textarea>
+      </div>
+
+      <!-- Summary -->
+      <div class="form-group">
+        <label for="summary">Pre-Lesson Primer Summary (for neurodivergent focus)</label>
+        <textarea
+          id="summary"
+          name="summary"
+          class="form-control"
+          rows="2"
+          placeholder="High-level bulleted or clear summary students can read before watching..."
+        >{{ form_data.summary or '' }}</textarea>
+      </div>
+
+      <!-- Key Terms Editor -->
+      <div class="form-group">
+        <label for="key_terms_raw">
+          Key Terms & Simplified Definitions
+          <span style="font-weight: normal; font-size: 0.8rem; color: var(--text-muted);">(One per line in format: <code>Term: Explanation</code>)</span>
+        </label>
+        <textarea
+          id="key_terms_raw"
+          name="key_terms_raw"
+          class="form-control"
+          rows="4"
+          placeholder="Chlorophyll: Natural green pigment that traps sunlight.&#10;Stomata: Tiny microscopic pores on leaf undersides."
+        >{{ form_data.key_terms_raw or '' }}</textarea>
+      </div>
+
+      <!-- Transcript Segments Editor -->
+      <div class="form-group">
+        <label for="segments_raw">
+          Transcript Sentences
+          <span style="font-weight: normal; font-size: 0.8rem; color: var(--text-muted);">(One sentence per line. Timestamps will be synchronized automatically.)</span>
+        </label>
+        <textarea
+          id="segments_raw"
+          name="segments_raw"
+          class="form-control"
+          rows="5"
+          placeholder="Welcome everyone! Today we are exploring photosynthesis.&#10;Plants make their own food inside green leaves using sunlight."
+        >{{ form_data.segments_raw or '' }}</textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 1rem; margin-top: 0.5rem; justify-content: flex-end;">
+        <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-secondary">
+          Cancel
+        </a>
+        <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.75rem; font-size: 1rem;">
+          {% if action == 'create' %}Create Lesson & Save to Cloud DB{% else %}Save Changes to Cloud DB{% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

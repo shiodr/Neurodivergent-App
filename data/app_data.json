@@ -1,0 +1,491 @@
+{
+  "teachers": {
+    "teacher_default_1": {
+      "id": "teacher_default_1",
+      "name": "Ms. Henderson",
+      "email": "teacher@school.edu",
+      "password_hash": "pbkdf2:sha256:1000000$LvNI7Nz9isr2koIA$9e613cefb861a8722a0fccaedd39950f0bc1806978d5ddf9312da49cfbc0345f",
+      "student_code": "BIO-101",
+      "created_at": "2026-09-01T08:00:00Z"
+    }
+  },
+  "lessons": {
+    "lesson_photosynthesis": {
+      "id": "lesson_photosynthesis",
+      "title": "Introduction to Photosynthesis: How Plants Make Food",
+      "subject": "Science",
+      "grade_level": "Elementary",
+      "student_code": "BIO-101",
+      "teacher_id": "teacher_default_1",
+      "teacher_name": "Ms. Henderson",
+      "description": "A gentle, step-by-step introduction to how green plants turn sunlight, water, and air into energy and oxygen.",
+      "summary": "Plants create their own food through photosynthesis using sunlight, water, and carbon dioxide. Inside leaf cells, chloroplasts trap light to produce energy-rich glucose and release clean oxygen into the air.",
+      "video_url": "/samples/photosynthesis.mp4",
+      "duration": 180.0,
+      "status": "READY",
+      "created_at": "2026-09-10T10:00:00Z",
+      "updated_at": "2026-09-10T10:00:00Z",
+      "chapters": [
+        {
+          "index": 0,
+          "title": "Introduction to Plant Food",
+          "startTime": 0.0,
+          "endTime": 38.0
+        },
+        {
+          "index": 1,
+          "title": "Inside Plant Cells: Chloroplasts",
+          "startTime": 38.0,
+          "endTime": 62.0
+        },
+        {
+          "index": 2,
+          "title": "Absorbing Water & Carbon Dioxide",
+          "startTime": 62.0,
+          "endTime": 95.0
+        },
+        {
+          "index": 3,
+          "title": "The Chemical Recipe: Glucose & Oxygen",
+          "startTime": 95.0,
+          "endTime": 158.0
+        },
+        {
+          "index": 4,
+          "title": "Review & Wrap Up",
+          "startTime": 158.0,
+          "endTime": 180.0
+        }
+      ],
+      "key_terms": [
+        {
+          "term": "Photosynthesis",
+          "explanation": "The way green plants make food using sunlight, water, and air. 'Photo' means light, 'synthesis' means putting together."
+        },
+        {
+          "term": "Chlorophyll",
+          "explanation": "The natural green pigment inside leaves that catches sunlight like a tiny solar panel."
+        },
+        {
+          "term": "Chloroplasts",
+          "explanation": "Tiny factory compartments inside plant cells where photosynthesis takes place."
+        },
+        {
+          "term": "Stomata",
+          "explanation": "Microscopic pores on leaf undersides that open and close to breathe in carbon dioxide and release oxygen."
+        },
+        {
+          "term": "Glucose",
+          "explanation": "A natural simple sugar that plants make for energy and growth."
+        },
+        {
+          "term": "Carbon Dioxide",
+          "explanation": "An invisible gas that humans breathe out, and plants take in to power photosynthesis."
+        }
+      ],
+      "segments": [
+        {
+          "index": 0,
+          "startTime": 0.0,
+          "endTime": 18.5,
+          "isCore": true,
+          "text": "Welcome everyone! Today we are exploring photosynthesis, which is the wonderful process plants use to make their own food."
+        },
+        {
+          "index": 1,
+          "startTime": 18.5,
+          "endTime": 38.0,
+          "isCore": false,
+          "text": "Unlike animals who eat food from outside, plants are autotrophs. That means they produce their own energy right inside their green leaves."
+        },
+        {
+          "index": 2,
+          "startTime": 38.0,
+          "endTime": 62.0,
+          "isCore": true,
+          "text": "Inside plant cells are tiny solar panels called chloroplasts. These contain chlorophyll, the green pigment that traps sunlight."
+        },
+        {
+          "index": 3,
+          "startTime": 62.0,
+          "endTime": 95.0,
+          "isCore": true,
+          "text": "Plants absorb water through their roots from the soil, and they take in carbon dioxide gas from the air through microscopic openings called stomata."
+        },
+        {
+          "index": 4,
+          "startTime": 95.0,
+          "endTime": 130.0,
+          "isCore": true,
+          "text": "When sunlight hits the chlorophyll, a chemical reaction combines water and carbon dioxide to create glucose, a simple sugar used for energy."
+        },
+        {
+          "index": 5,
+          "startTime": 130.0,
+          "endTime": 158.0,
+          "isCore": false,
+          "text": "As a marvelous bonus for us and all living creatures, this process releases pure oxygen into the atmosphere for us to breathe."
+        },
+        {
+          "index": 6,
+          "startTime": 158.0,
+          "endTime": 180.0,
+          "isCore": true,
+          "text": "So to review the recipe: sunlight plus water plus carbon dioxide gives the plant glucose for food, and gives the world oxygen. Great job today!"
+        }
+      ],
+      "practice_questions": [
+        {
+          "question": "What is the green pigment in leaves that traps sunlight?",
+          "answer": "Chlorophyll",
+          "hint": "It makes leaves look green.",
+          "options": [
+            "Chlorophyll",
+            "Glucose",
+            "Stomata",
+            "Oxygen"
+          ]
+        },
+        {
+          "question": "What simple sugar do plants make for food and energy?",
+          "answer": "Glucose",
+          "hint": "A sweet substance that powers the plant cells.",
+          "options": [
+            "Carbon dioxide",
+            "Water",
+            "Glucose",
+            "Sunlight"
+          ]
+        },
+        {
+          "question": "What gas do plants release into the air for humans to breathe?",
+          "answer": "Oxygen",
+          "hint": "The fresh air you take in every breath.",
+          "options": [
+            "Oxygen",
+            "Carbon dioxide",
+            "Nitrogen",
+            "Helium"
+          ]
+        }
+      ]
+    },
+    "lesson_water_cycle": {
+      "id": "lesson_water_cycle",
+      "title": "The Water Cycle: Earth's Natural Recycling System",
+      "subject": "Science",
+      "grade_level": "Elementary",
+      "student_code": "EARTH-2026",
+      "teacher_id": "teacher_default_1",
+      "teacher_name": "Ms. Henderson",
+      "description": "Discover how water moves constantly across our planet through evaporation, condensation, precipitation, and collection.",
+      "summary": "The water cycle is Earth's infinite recycling journey. Sunlight powers evaporation and transpiration to lift vapor into the sky, where it cools into clouds through condensation and falls back as rain or snow.",
+      "video_url": "/samples/water-cycle.mp4",
+      "duration": 150.0,
+      "status": "READY",
+      "created_at": "2026-09-12T11:30:00Z",
+      "updated_at": "2026-09-12T11:30:00Z",
+      "chapters": [
+        {
+          "index": 0,
+          "title": "Earth's Ancient Water",
+          "startTime": 0.0,
+          "endTime": 22.0
+        },
+        {
+          "index": 1,
+          "title": "Evaporation: Rising to the Sky",
+          "startTime": 22.0,
+          "endTime": 54.0
+        },
+        {
+          "index": 2,
+          "title": "Transpiration: Plants Give Moisture",
+          "startTime": 54.0,
+          "endTime": 85.0
+        },
+        {
+          "index": 3,
+          "title": "Condensation: Making Clouds",
+          "startTime": 85.0,
+          "endTime": 115.0
+        },
+        {
+          "index": 4,
+          "title": "Precipitation: Rain & Snow Return",
+          "startTime": 115.0,
+          "endTime": 150.0
+        }
+      ],
+      "key_terms": [
+        {
+          "term": "Evaporation",
+          "explanation": "When the sun heats up liquid water and turns it into invisible gas (water vapor) that floats into the sky."
+        },
+        {
+          "term": "Transpiration",
+          "explanation": "Plants 'sweating' water vapor out from their leaf pores into the air."
+        },
+        {
+          "term": "Condensation",
+          "explanation": "When cool air causes water vapor to turn back into tiny liquid droplets that form clouds."
+        },
+        {
+          "term": "Precipitation",
+          "explanation": "Water falling from clouds back to Earth as rain, snow, sleet, or hail."
+        }
+      ],
+      "segments": [
+        {
+          "index": 0,
+          "startTime": 0.0,
+          "endTime": 22.0,
+          "isCore": false,
+          "text": "Hello learners! Did you know the water you drank today might be the same water a dinosaur drank millions of years ago? This is because of the water cycle."
+        },
+        {
+          "index": 1,
+          "startTime": 22.0,
+          "endTime": 54.0,
+          "isCore": true,
+          "text": "First is evaporation. The sun warms lakes, rivers, and oceans, turning liquid water into invisible water vapor that floats up into the sky."
+        },
+        {
+          "index": 2,
+          "startTime": 54.0,
+          "endTime": 85.0,
+          "isCore": true,
+          "text": "Plants also release water vapor from their leaves in a process called transpiration, adding even more moisture to the air."
+        },
+        {
+          "index": 3,
+          "startTime": 85.0,
+          "endTime": 115.0,
+          "isCore": true,
+          "text": "High in the cold sky, condensation happens. The water vapor cools down and clumps together onto tiny dust specks to form fluffy clouds."
+        },
+        {
+          "index": 4,
+          "startTime": 115.0,
+          "endTime": 150.0,
+          "isCore": true,
+          "text": "When the clouds become too heavy, precipitation falls down as rain, snow, sleet, or hail, replenishing our rivers and starting the cycle again."
+        }
+      ],
+      "practice_questions": [
+        {
+          "question": "What turns liquid water into invisible vapor that rises into the sky?",
+          "answer": "Evaporation",
+          "hint": "The sun provides the warmth for this step.",
+          "options": [
+            "Evaporation",
+            "Precipitation",
+            "Freezing",
+            "Melting"
+          ]
+        },
+        {
+          "question": "What is the term for water vapor released by plant leaves?",
+          "answer": "Transpiration",
+          "hint": "Think of it as plants sweating moisture.",
+          "options": [
+            "Transpiration",
+            "Condensation",
+            "Photosynthesis",
+            "Respiration"
+          ]
+        },
+        {
+          "question": "What happens during condensation?",
+          "answer": "Water vapor cools down and forms clouds",
+          "hint": "Cool air causes droplets to gather together.",
+          "options": [
+            "Water vapor cools down and forms clouds",
+            "Rain falls to the ground",
+            "The sun boils water away",
+            "Water seeps into deep soil"
+          ]
+        }
+      ]
+    },
+    "lesson_fractions": {
+      "id": "lesson_fractions",
+      "title": "Understanding Fractions: Parts of a Whole",
+      "subject": "Mathematics",
+      "grade_level": "Elementary",
+      "student_code": "MATH-5A",
+      "teacher_id": "teacher_default_1",
+      "teacher_name": "Ms. Henderson",
+      "description": "Learn how equal shares create halves, thirds, and quarters with visual pizza and chocolate bar models.",
+      "summary": "Fractions represent parts of an equal whole. The numerator (top number) counts how many parts you have, while the denominator (bottom number) shows how many equal parts make the whole.",
+      "video_url": "/samples/photosynthesis.mp4",
+      "duration": 120.0,
+      "status": "READY",
+      "created_at": "2026-09-15T09:15:00Z",
+      "updated_at": "2026-09-15T09:15:00Z",
+      "chapters": [
+        {
+          "index": 0,
+          "title": "What is a Fraction?",
+          "startTime": 0.0,
+          "endTime": 30.0
+        },
+        {
+          "index": 1,
+          "title": "Numerator vs Denominator",
+          "startTime": 30.0,
+          "endTime": 70.0
+        },
+        {
+          "index": 2,
+          "title": "Equal Slices & Sharing",
+          "startTime": 70.0,
+          "endTime": 120.0
+        }
+      ],
+      "key_terms": [
+        {
+          "term": "Numerator",
+          "explanation": "The top number in a fraction that tells how many pieces you have."
+        },
+        {
+          "term": "Denominator",
+          "explanation": "The bottom number in a fraction that tells the total number of equal pieces in the whole thing."
+        },
+        {
+          "term": "Equivalent Fractions",
+          "explanation": "Different fractions that name the exact same amount, like 1/2 and 2/4."
+        }
+      ],
+      "segments": [
+        {
+          "index": 0,
+          "startTime": 0.0,
+          "endTime": 30.0,
+          "isCore": true,
+          "text": "Welcome mathematicians! Today we are learning about fractions by sharing pizzas and cookies into equal parts."
+        },
+        {
+          "index": 1,
+          "startTime": 30.0,
+          "endTime": 70.0,
+          "isCore": true,
+          "text": "A fraction has two numbers. The top is the numerator, telling how many slices you take. The bottom is the denominator, showing all slices combined."
+        },
+        {
+          "index": 2,
+          "startTime": 70.0,
+          "endTime": 120.0,
+          "isCore": true,
+          "text": "If a pizza has 4 equal slices and you eat 1 slice, you ate 1 over 4, or one quarter of the pizza!"
+        }
+      ],
+      "practice_questions": [
+        {
+          "question": "In the fraction 3/4, what number is the denominator?",
+          "answer": "4",
+          "hint": "The denominator is the bottom number.",
+          "options": [
+            "4",
+            "3",
+            "7",
+            "1"
+          ]
+        },
+        {
+          "question": "If you cut an apple into 2 equal pieces and eat 1, what fraction did you eat?",
+          "answer": "1/2",
+          "hint": "One piece out of two total pieces.",
+          "options": [
+            "1/2",
+            "2/1",
+            "1/4",
+            "3/4"
+          ]
+        }
+      ]
+    },
+    "lesson_cellular_respiration": {
+      "id": "lesson_cellular_respiration",
+      "title": "Cellular Respiration and Energy Transfer",
+      "subject": "Science",
+      "grade_level": "High School",
+      "student_code": "BIO-101",
+      "teacher_id": "teacher_default_1",
+      "teacher_name": "Ms. Henderson",
+      "description": "Examine how cells break down glucose molecules to synthesize ATP energy in mitochondria.",
+      "summary": "Cellular respiration converts biochemical energy from nutrients into ATP, releasing metabolic waste products like carbon dioxide and water.",
+      "video_url": "/samples/photosynthesis.mp4",
+      "duration": 210.0,
+      "status": "READY",
+      "created_at": "2026-09-18T14:00:00Z",
+      "updated_at": "2026-09-18T14:00:00Z",
+      "chapters": [
+        {
+          "index": 0,
+          "title": "Glycolysis in the Cytoplasm",
+          "startTime": 0.0,
+          "endTime": 60.0
+        },
+        {
+          "index": 1,
+          "title": "The Krebs Cycle",
+          "startTime": 60.0,
+          "endTime": 130.0
+        },
+        {
+          "index": 2,
+          "title": "Electron Transport Chain & ATP",
+          "startTime": 130.0,
+          "endTime": 210.0
+        }
+      ],
+      "key_terms": [
+        {
+          "term": "Mitochondria",
+          "explanation": "The powerhouse organelle in cells where respiration generates ATP."
+        },
+        {
+          "term": "ATP (Adenosine Triphosphate)",
+          "explanation": "The primary energy currency used by cells to do mechanical, chemical, and transport work."
+        }
+      ],
+      "segments": [
+        {
+          "index": 0,
+          "startTime": 0.0,
+          "endTime": 60.0,
+          "isCore": true,
+          "text": "Welcome high school biology students. Today we analyze cellular respiration and how chemical bonds yield ATP energy."
+        },
+        {
+          "index": 1,
+          "startTime": 60.0,
+          "endTime": 130.0,
+          "isCore": true,
+          "text": "Glycolysis splits glucose into pyruvate, which then enters the mitochondria to fuel the citric acid cycle."
+        },
+        {
+          "index": 2,
+          "startTime": 130.0,
+          "endTime": 210.0,
+          "isCore": true,
+          "text": "Finally, the electron transport chain produces the vast majority of cellular ATP via oxidative phosphorylation."
+        }
+      ],
+      "practice_questions": [
+        {
+          "question": "What molecule is known as the cellular energy currency?",
+          "answer": "ATP",
+          "hint": "Three letters standing for Adenosine Triphosphate.",
+          "options": [
+            "ATP",
+            "DNA",
+            "RNA",
+            "Glucose"
+          ]
+        }
+      ]
+    }
+  }
+}

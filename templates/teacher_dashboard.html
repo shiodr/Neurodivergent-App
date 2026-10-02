@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Portal & Dashboard - Neurodivergent Lesson Companion{% endblock %}
+
+{% block extra_head %}
+<style>
+  .metric-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .metric-card {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .metric-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: var(--primary-light);
+    color: var(--primary);
+  }
+  .table-container {
+    background: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow-x: auto;
+    box-shadow: var(--shadow-sm);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+  th {
+    background: var(--bg-elevated);
+    padding: 0.85rem 1rem;
+    border-bottom: 2px solid var(--border-color);
+    color: var(--text-muted);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+  td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+  }
+  tr:hover td {
+    background: var(--bg-elevated);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Teacher Top Header -->
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+  <div>
+    <span class="badge" style="background: var(--accent-calm-light); color: var(--accent-calm); font-weight: 800; margin-bottom: 0.25rem;">
+      Educator & Administrator Management
+    </span>
+    <h1 style="font-size: 2.2rem; margin: 0.25rem 0 0 0;">
+      Teacher Portal: {{ current_user.name }}
+    </h1>
+    <p style="color: var(--text-muted); margin: 0.25rem 0 0 0; font-size: 0.95rem;">
+      Logged in as: <code>{{ current_user.email }}</code>
+    </p>
+  </div>
+
+  <div style="display: flex; gap: 0.75rem;">
+    <a href="{{ url_for('lesson_create') }}" class="btn btn-primary" style="font-size: 1rem;">
+      + Upload / Create New Lesson
+    </a>
+  </div>
+</div>
+
+<!-- Prominent Student Access Code Card -->
+<section style="background: linear-gradient(135deg, #065f46, #047857, #059669); color: #ffffff; border-radius: var(--radius-xl); padding: 1.75rem 2rem; margin-bottom: 2rem; box-shadow: var(--shadow-md);">
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <span style="text-transform: uppercase; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.05em; background: rgba(255,255,255,0.2); padding: 0.2rem 0.6rem; border-radius: 0.4rem;">
+        Student Access Code
+      </span>
+      <h2 style="color: #ffffff; font-size: 1.75rem; margin: 0.4rem 0 0.2rem 0;">
+        Code for Your Students: <span id="teacherCodeSpan" style="font-family: monospace; background: rgba(0,0,0,0.3); padding: 0.2rem 0.75rem; border-radius: 0.5rem; letter-spacing: 0.05em; font-weight: 900;">{{ current_user.student_code }}</span>
+      </h2>
+      <p style="color: #d1fae5; margin: 0; font-size: 0.95rem; max-width: 650px;">
+        Provide this code to your students. They can enter it on the homepage to access your classroom lessons immediately without needing an account or password.
+      </p>
+    </div>
+
+    <div>
+      <button
+        type="button"
+        id="copyCodeBtn"
+        class="btn btn-secondary"
+        onclick="copyStudentCode('{{ current_user.student_code }}')"
+        style="background: #ffffff; color: #065f46 !important; font-weight: 800; border: none; font-size: 1rem;"
+      >
+        📋 Copy Student Code
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard Metrics -->
+<div class="metric-cards">
+  <div class="metric-card">
+    <div class="metric-icon">🎥</div>
+    <div>
+      <div style="font-size: 1.75rem; font-weight: 900;">{{ lessons|length }}</div>
+      <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">
+        Total Lessons
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon">📖</div>
+    <div>
+      <div style="font-size: 1.75rem; font-weight: 900;">{{ total_key_terms }}</div>
+      <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">
+        Key Terms Defined
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon">💬</div>
+    <div>
+      <div style="font-size: 1.75rem; font-weight: 900;">{{ total_segments }}</div>
+      <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">
+        Transcript Sentences
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon">☁️</div>
+    <div>
+      <div style="font-size: 1.1rem; font-weight: 900; color: var(--primary);">Firebase Firestore</div>
+      <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">
+        Cloud Database
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lessons Management Table -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+  <h2 style="font-size: 1.4rem; margin: 0;">Lesson Management (CRUD Operations)</h2>
+  <a href="{{ url_for('lesson_create') }}" class="btn btn-primary btn-sm">
+    + Add Lesson
+  </a>
+</div>
+
+{% if lessons %}
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Title & Description</th>
+          <th>Subject</th>
+          <th>Grade</th>
+          <th>Student Code</th>
+          <th>Duration</th>
+          <th>Key Terms</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for lesson in lessons %}
+          <tr>
+            <td style="max-width: 320px;">
+              <strong style="color: var(--text-main); font-size: 1rem;">{{ lesson.title }}</strong>
+              <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ lesson.description }}
+              </div>
+            </td>
+            <td>
+              <span class="badge badge-subject">{{ lesson.subject }}</span>
+            </td>
+            <td>
+              <span class="badge">{{ lesson.grade_level }}</span>
+            </td>
+            <td>
+              <span class="badge badge-code">{{ lesson.student_code }}</span>
+            </td>
+            <td style="font-family: monospace; font-weight: 700;">
+              {{ (lesson.duration // 60)|int }}:{{ "%02d"|format((lesson.duration % 60)|int) }}
+            </td>
+            <td>
+              <span class="badge">{{ lesson.key_terms|length }} terms</span>
+            </td>
+            <td>
+              <div style="display: flex; gap: 0.4rem; align-items: center;">
+                <!-- READ (View) -->
+                <a href="{{ url_for('lesson_detail', lesson_id=lesson.id) }}" class="btn btn-secondary btn-sm" title="Preview lesson player">
+                  View
+                </a>
+
+                <!-- UPDATE (Edit) -->
+                <a href="{{ url_for('lesson_edit', lesson_id=lesson.id) }}" class="btn btn-secondary btn-sm" title="Edit lesson content and student code">
+                  Edit
+                </a>
+
+                <!-- DELETE -->
+                <form action="{{ url_for('lesson_delete', lesson_id=lesson.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete \'{{ lesson.title }}\'? This cannot be undone.');" style="margin: 0;">
+                  <button type="submit" class="btn btn-danger btn-sm" title="Delete lesson">
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div style="text-align: center; padding: 3rem; background: var(--bg-card); border: 2px dashed var(--border-color); border-radius: var(--radius-lg);">
+    <h3>No Lessons Yet</h3>
+    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+      You have not created any recorded lessons yet. Click below to add your first lesson.
+    </p>
+    <a href="{{ url_for('lesson_create') }}" class="btn btn-primary">
+      + Create First Lesson
+    </a>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  function copyStudentCode(code) {
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = document.getElementById('copyCodeBtn');
+      const originalText = btn.textContent;
+      btn.textContent = '✅ Copied to Clipboard!';
+      setTimeout(() => {
+        btn.textContent = originalText;
+      }, 2500);
+    }).catch(err => {
+      alert("Student code: " + code);
+    });
+  }
+</script>
+{% endblock %}

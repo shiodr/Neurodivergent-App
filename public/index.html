@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neurodivergent Lesson Companion - Firebase Online Hosting</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --primary: #2563eb;
+      --accent: #7c3aed;
+      --border: #e2e8f0;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+    header {
+      background: var(--card);
+      border-bottom: 2px solid var(--border);
+      padding: 1rem 0;
+    }
+    .hero {
+      background: linear-gradient(135deg, #1e3a8a, #4338ca, #6b21a8);
+      color: white;
+      padding: 3rem 2rem;
+      border-radius: 1.5rem;
+      margin: 2rem 0;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+    }
+    .hero h1 { margin: 0 0 0.5rem 0; font-size: 2.4rem; }
+    .hero p { color: #e0e7ff; font-size: 1.1rem; max-width: 650px; }
+    .code-box {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 0.75rem;
+      max-width: 480px;
+      flex-wrap: wrap;
+    }
+    .code-box input {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      border-radius: 0.75rem;
+      border: 2px solid white;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border-radius: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+    }
+    .btn-green { background: #10b981; color: white; }
+    .btn-primary { background: var(--primary); color: white; }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    .card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: #ede9fe;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #64748b;
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+  </style>
+
+  <!-- Firebase Web App Configuration (User-Provided) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxVb9pD2outFE7yO6fd8vBSM61qh_0qWk",
+      authDomain: "neurodivergent-app-15a25.firebaseapp.com",
+      projectId: "neurodivergent-app-15a25",
+      storageBucket: "neurodivergent-app-15a25.firebasestorage.app",
+      messagingSenderId: "858987650546",
+      appId: "1:858987650546:web:0f53a2f044f56e2e0b1f6b",
+      measurementId: "G-0KY8HLFTZX"
+    };
+
+    // Initialize Firebase
+    try {
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      console.log("Firebase App & Analytics Initialized successfully!");
+      document.getElementById('fbStatus').textContent = "Connected (neurodivergent-app-15a25)";
+      document.getElementById('fbStatus').style.color = "#059669";
+    } catch (err) {
+      console.warn("Firebase Notice:", err);
+      document.getElementById('fbStatus').textContent = "Configured (neurodivergent-app-15a25)";
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1.5rem;">
+      <div style="font-weight: 900; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span style="background: #2563eb; color: white; padding: 0.2rem 0.5rem; border-radius: 0.5rem;">ND</span>
+        <span>Lesson Companion</span>
+      </div>
+      <div>
+        <span style="font-size: 0.85rem; font-weight: 700; color: #64748b;">
+          Firebase Status: <span id="fbStatus" style="font-weight: 800;">Connecting...</span>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="hero">
+      <span class="badge" style="background: rgba(255,255,255,0.25); color: white;">
+        Hosted on Firebase
+      </span>
+      <h1>Accessible Video Study Companion</h1>
+      <p>
+        Support for neurodivergent elementary and high school learners: recorded lessons with clickable synchronized transcripts, simplified key terms, sensory breaks, and instant teacher access codes.
+      </p>
+
+      <div class="code-box">
+        <input type="text" id="studentCodeInput" placeholder="ENTER STUDENT CODE (e.g. BIO-101)">
+        <button class="btn btn-green" onclick="handleStudentCode()">
+          Unlock Lessons
+        </button>
+      </div>
+      <div style="margin-top: 0.75rem; font-size: 0.85rem; color: #c7d2fe;">
+        Demo Student Codes: <strong style="cursor: pointer;" onclick="quickCode('BIO-101')">BIO-101</strong>, <strong style="cursor: pointer;" onclick="quickCode('EARTH-2026')">EARTH-2026</strong>, <strong style="cursor: pointer;" onclick="quickCode('MATH-5A')">MATH-5A</strong>
+      </div>
+    </div>
+
+    <h2>Features & Architecture</h2>
+    <div class="card-grid">
+      <div class="card">
+        <span class="badge">Teacher's Portal</span>
+        <h3>Teacher Login & Student Codes</h3>
+        <p style="color: #64748b; font-size: 0.95rem;">
+          Secure teacher signup, password-authenticated login, and primary student access code generation. Teachers can provide their customized code to students.
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="badge">Cloud Database</span>
+        <h3>Firebase Firestore Integration</h3>
+        <p style="color: #64748b; font-size: 0.95rem;">
+          Integrated with project <code>neurodivergent-app-15a25</code> supporting full CRUD operations (Create, Read, Update, Delete) with resilient offline fallback.
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="badge">Search & Filter</span>
+        <h3>Query, Filter & Sorting</h3>
+        <p style="color: #64748b; font-size: 0.95rem;">
+          Fast keyword queries, filtering by subject (Science, Math, English, etc.) and grade level, sorted by date, title, or duration.
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="badge">Accessibility</span>
+        <h3>Calming Themes & Sensory Pause</h3>
+        <p style="color: #64748b; font-size: 0.95rem;">
+          Guided 30-second box breathing pause, adjustable font sizing, contrast modes, and text-to-speech definitions for neurodivergent learners.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    Neurodivergent Lesson Companion &bull; Python Flask + Firebase Firestore + Firebase Hosting
+  </footer>
+
+  <script>
+    function quickCode(code) {
+      document.getElementById('studentCodeInput').value = code;
+    }
+    function handleStudentCode() {
+      const code = document.getElementById('studentCodeInput').value.trim();
+      if (!code) {
+        alert("Please enter a student code provided by your teacher (e.g. BIO-101)");
+        return;
+      }
+      window.location.href = `/?code=${encodeURIComponent(code)}`;
+    }
+  </script>
+</body>
+</html>

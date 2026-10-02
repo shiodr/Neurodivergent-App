@@ -1,0 +1,37 @@
+[debug] [2026-10-02T14:57:11.771Z] ----------------------------------------------------------------------
+[debug] [2026-10-02T14:57:11.779Z] Command:       /opt/homebrew/Cellar/node/26.10.0_1/bin/node /opt/homebrew/bin/firebase deploy
+[debug] [2026-10-02T14:57:11.780Z] CLI Version:   15.30.2
+[debug] [2026-10-02T14:57:11.780Z] Platform:      darwin
+[debug] [2026-10-02T14:57:11.780Z] Node Version:  v26.10.0
+[debug] [2026-10-02T14:57:11.780Z] Detected Agent: unknown
+[debug] [2026-10-02T14:57:11.780Z] Time:          Fri Oct 02 2026 22:57:11 GMT+0800 (Philippine Standard Time)
+[debug] [2026-10-02T14:57:11.780Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-10-02T14:57:14.003Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-10-02T14:57:14.008Z] > authorizing via signed-in user (2320702@ub.edu.ph)
+[debug] [2026-10-02T14:57:14.008Z] [iam] checking project neurodivergent-app-15a25 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-10-02T14:57:14.048Z] Checked if tokens are valid: true, expires at: 1790956589434
+[debug] [2026-10-02T14:57:14.048Z] Checked if tokens are valid: true, expires at: 1790956589434
+[debug] [2026-10-02T14:57:14.049Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/neurodivergent-app-15a25:testIamPermissions [none]
+[debug] [2026-10-02T14:57:14.049Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/neurodivergent-app-15a25:testIamPermissions  x-goog-user-project=neurodivergent-app-15a25
+[debug] [2026-10-02T14:57:14.049Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/neurodivergent-app-15a25:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-10-02T14:57:15.463Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/neurodivergent-app-15a25:testIamPermissions 200
+[debug] [2026-10-02T14:57:15.465Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/neurodivergent-app-15a25:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-10-02T14:57:15.466Z] Checked if tokens are valid: true, expires at: 1790956589434
+[debug] [2026-10-02T14:57:15.467Z] Checked if tokens are valid: true, expires at: 1790956589434
+[debug] [2026-10-02T14:57:15.467Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/neurodivergent-app-15a25 [none]
+[debug] [2026-10-02T14:57:15.797Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/neurodivergent-app-15a25 200
+[debug] [2026-10-02T14:57:15.797Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/neurodivergent-app-15a25 {"projectId":"neurodivergent-app-15a25","projectNumber":"858987650546","displayName":"Neurodivergent-App","name":"projects/neurodivergent-app-15a25","resources":{"hostingSite":"neurodivergent-app-15a25"},"state":"ACTIVE","labels":{"firebase":"enabled"},"etag":"1_42e5d3d9-ed35-47d0-8020-e936232fe915"}
+[info] 
+[info] === Deploying to 'neurodivergent-app-15a25'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2026-10-02T14:57:15.801Z] Checked if tokens are valid: true, expires at: 1790956589434
+[debug] [2026-10-02T14:57:15.801Z] Checked if tokens are valid: true, expires at: 1790956589434
+[debug] [2026-10-02T14:57:15.801Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/neurodivergent-app-15a25/sites/neurodivergent-app-15a25 [none]
+[debug] [2026-10-02T14:57:17.612Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/neurodivergent-app-15a25/sites/neurodivergent-app-15a25 200
+[debug] [2026-10-02T14:57:17.612Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/neurodivergent-app-15a25/sites/neurodivergent-app-15a25 {"name":"projects/neurodivergent-app-15a25/sites/neurodivergent-app-15a25","defaultUrl":"https://neurodivergent-app-15a25.web.app","appId":"1:858987650546:web:0f53a2f044f56e2e0b1f6b","type":"DEFAULT_SITE"}
+[debug] [2026-10-02T14:57:17.615Z] Checked if tokens are valid: true, expires at: 1790956589434
+[debug] [2026-10-02T14:57:17.615Z] Checked if tokens are valid: true, expires at: 1790956589434
+[debug] [2026-10-02T14:57:17.615Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/neurodivergent-app-15a25/versions [none]
+[debug] [2026-10-02T14:57:17.615Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/neurodivergent-app-15a25/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}

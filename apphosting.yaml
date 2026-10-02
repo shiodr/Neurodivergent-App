@@ -1,0 +1,11 @@
+runConfig:
+  minInstances: 0
+  maxInstances: 2
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+env:
+  - variable: FIREBASE_PROJECT_ID
+    value: neurodivergent-app-15a25
+  - variable: FIREBASE_API_KEY
+    value: AIzaSyDxVb9pD2outFE7yO6fd8vBSM61qh_0qWk

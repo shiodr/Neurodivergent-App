@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Neurodivergent Lesson Companion{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='../public/favicon.ico') }}" type="image/x-icon">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <!-- Brand / Logo -->
+        <a href="{{ url_for('index') }}" class="brand" aria-label="Go to homepage">
+          <span class="badge-logo">ND</span>
+          <span>Lesson Companion</span>
+        </a>
+
+        <!-- Accessibility Bar: Calming Theme & Font Size Controls -->
+        <div class="accessibility-bar" role="region" aria-label="Accessibility Settings">
+          <label for="themeSelect" class="sr-only">Theme</label>
+          <select id="themeSelect" onchange="changeTheme(this.value)" aria-label="Select visual theme">
+            <option value="default">Default Slate</option>
+            <option value="sage">Sage Calm (Green)</option>
+            <option value="sand">Warm Sand (Amber)</option>
+            <option value="ocean">Ocean Calm (Blue)</option>
+            <option value="contrast">High Contrast (AAA)</option>
+          </select>
+
+          <button type="button" onclick="adjustFontSize(-1)" title="Smaller text" aria-label="Decrease text size">A-</button>
+          <button type="button" onclick="adjustFontSize(1)" title="Larger text" aria-label="Increase text size">A+</button>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="nav-links">
+          <a href="{{ url_for('index') }}" class="btn btn-secondary btn-sm">All Lessons</a>
+
+          {% if active_student_code %}
+            <span class="badge badge-code" title="Active student filter code">
+              Class Code: <strong>{{ active_student_code }}</strong>
+              <a href="{{ url_for('clear_student_code') }}" style="margin-left: 5px; color: #b91c1c; text-decoration: none;" title="Clear Code">✕</a>
+            </span>
+          {% endif %}
+
+          {% if current_user %}
+            <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-primary btn-sm">
+              Teacher Portal ({{ current_user.name }})
+            </a>
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-sm">Sign Out</a>
+          {% else %}
+            <a href="{{ url_for('login') }}" class="btn btn-secondary btn-sm">Teacher Login</a>
+            <a href="{{ url_for('signup') }}" class="btn btn-primary btn-sm">Teacher Signup</a>
+          {% endif %}
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Flash Alerts -->
+  <div class="container flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}" role="alert">
+            <span>{{ message }}</span>
+            <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; color: inherit;">✕</button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Main Content Block -->
+  <main class="container" style="flex: 1; padding-top: 1rem; padding-bottom: 2rem;">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <strong>Neurodivergent Lesson Companion</strong> &mdash; Accessible, low-distraction review for students.
+          <div style="margin-top: 0.35rem; font-size: 0.8rem;">
+            No diagnosis required. Powered by Python Flask &bull; Firebase Hosting &bull; Cloud Firestore.
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <span class="badge {% if cloud_status.connected %}alert-success{% else %}alert-warning{% endif %}">
+            Cloud DB: {{ cloud_status.provider }} ({{ cloud_status.project_id }})
+          </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Accessibility Scripts -->
+  <script>
+    // Theme switcher
+    function changeTheme(themeName) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      localStorage.setItem('nd_theme', themeName);
+    }
+    const savedTheme = localStorage.getItem('nd_theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      const sel = document.getElementById('themeSelect');
+      if (sel) sel.value = savedTheme;
+    }
+
+    // Font size adjuster
+    let currentFontSize = parseInt(localStorage.getItem('nd_fontSize') || '16', 10);
+    function applyFontSize(size) {
+      document.documentElement.style.setProperty('--font-base', size + 'px');
+      localStorage.setItem('nd_fontSize', size);
+    }
+    function adjustFontSize(delta) {
+      currentFontSize = Math.min(24, Math.max(14, currentFontSize + delta * 2));
+      applyFontSize(currentFontSize);
+    }
+    if (savedTheme) applyFontSize(currentFontSize);
+  </script>
+
+  <!-- Firebase Client SDK (Web App Configuration) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxVb9pD2outFE7yO6fd8vBSM61qh_0qWk",
+      authDomain: "neurodivergent-app-15a25.firebaseapp.com",
+      projectId: "neurodivergent-app-15a25",
+      storageBucket: "neurodivergent-app-15a25.firebasestorage.app",
+      messagingSenderId: "858987650546",
+      appId: "1:858987650546:web:0f53a2f044f56e2e0b1f6b",
+      measurementId: "G-0KY8HLFTZX"
+    };
+
+    try {
+      const fbApp = initializeApp(firebaseConfig);
+      console.log("Firebase initialized on client for project:", firebaseConfig.projectId);
+    } catch (err) {
+      console.warn("Client Firebase notice:", err);
+    }
+  </script>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>
