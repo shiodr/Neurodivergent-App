@@ -4,322 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teacher Portal - Neurodivergent Lesson Companion</title>
-
-  <style>
-/* Modern Accessible Styling with Calming Themes for Neurodivergent Learners */
-:root {
-  --bg-primary: #f8fafc;
-  --bg-card: #ffffff;
-  --bg-elevated: #f1f5f9;
-  --text-main: #0f172a;
-  --text-muted: #475569;
-  --border-color: #cbd5e1;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --primary-light: #dbeafe;
-  --accent-calm: #8b5cf6;
-  --accent-calm-light: #ede9fe;
-  --success: #059669;
-  --success-light: #d1fae5;
-  --warning: #d97706;
-  --warning-light: #fef3c7;
-  --danger: #dc2626;
-  --danger-light: #fee2e2;
-  --font-base: 16px;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-}
-
-[data-theme="sage"] {
-  --bg-primary: #f4f7f4;
-  --bg-card: #ffffff;
-  --bg-elevated: #e8efe8;
-  --text-main: #142a1b;
-  --text-muted: #395240;
-  --border-color: #c4d7c6;
-  --primary: #2d6a4f;
-  --primary-hover: #1b4332;
-  --primary-light: #d8f3dc;
-  --accent-calm: #52796f;
-  --accent-calm-light: #dbe7e4;
-}
-
-[data-theme="sand"] {
-  --bg-primary: #faf6f0;
-  --bg-card: #fffdfa;
-  --bg-elevated: #f3ede2;
-  --text-main: #29221b;
-  --text-muted: #5e5246;
-  --border-color: #ded1c1;
-  --primary: #b45309;
-  --primary-hover: #92400e;
-  --primary-light: #fef3c7;
-  --accent-calm: #8d5b4c;
-  --accent-calm-light: #f5ebe6;
-}
-
-[data-theme="ocean"] {
-  --bg-primary: #f0f7fa;
-  --bg-card: #ffffff;
-  --bg-elevated: #e2eff5;
-  --text-main: #0c2333;
-  --text-muted: #315166;
-  --border-color: #bcd4e3;
-  --primary: #0284c7;
-  --primary-hover: #0369a1;
-  --primary-light: #e0f2fe;
-}
-
-[data-theme="contrast"] {
-  --bg-primary: #000000;
-  --bg-card: #121212;
-  --bg-elevated: #242424;
-  --text-main: #ffffff;
-  --text-muted: #e2e8f0;
-  --border-color: #ffff00;
-  --primary: #ffff00;
-  --primary-hover: #e6e600;
-  --primary-light: #333300;
-  --accent-calm: #00ffff;
-  --accent-calm-light: #003333;
-}
-
-html {
-  font-size: var(--font-base);
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: var(--text-main);
-  background-color: var(--bg-primary);
-  line-height: 1.6;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-*, *:before, *:after { box-sizing: inherit; }
-
-h1, h2, h3, h4 {
-  color: var(--text-main);
-  line-height: 1.3;
-  font-weight: 800;
-  margin-top: 0;
-}
-
-a { color: var(--primary); text-decoration: none; }
-a:hover { text-decoration: underline; }
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.25rem;
-  width: 100%;
-}
-
-.site-header {
-  background: var(--bg-card);
-  border-bottom: 2px solid var(--border-color);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  box-shadow: var(--shadow-sm);
-}
-
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.85rem 0;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-size: 1.25rem;
-  font-weight: 900;
-  color: var(--text-main);
-  text-decoration: none;
-}
-.brand span.badge-logo {
-  background: linear-gradient(135deg, var(--primary), var(--accent-calm));
-  color: #ffffff;
-  padding: 0.35rem 0.65rem;
-  border-radius: 0.75rem;
-  font-size: 0.85rem;
-}
-
-.accessibility-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--bg-elevated);
-  padding: 0.3rem 0.6rem;
-  border-radius: 9999px;
-  border: 1px solid var(--border-color);
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-.accessibility-bar select, .accessibility-bar button {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
-  font-size: 0.8rem;
-  cursor: pointer;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.75rem;
-  font-weight: 700;
-  font-size: 0.9rem;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: all 0.15s ease-in-out;
-  text-decoration: none !important;
-}
-
-.btn-primary { background-color: var(--primary); color: #ffffff !important; }
-.btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
-
-.btn-secondary { background-color: var(--bg-card); border-color: var(--border-color); color: var(--text-main) !important; }
-.btn-secondary:hover { background-color: var(--bg-elevated); }
-
-.btn-calm { background-color: var(--accent-calm); color: #ffffff !important; }
-.btn-danger { background-color: var(--danger); color: #ffffff !important; }
-.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; border-radius: 0.5rem; }
-
-.badge {
-  padding: 0.2rem 0.55rem;
-  border-radius: 0.4rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
-}
-.badge-code { background: #fef3c7; color: #92400e; border-color: #fde68a; }
-.badge-subject { background: var(--primary-light); color: var(--primary); }
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  margin-bottom: 1rem;
-}
-.form-group label {
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-}
-.form-control {
-  padding: 0.75rem 0.95rem;
-  border: 2px solid var(--border-color);
-  border-radius: 0.65rem;
-  background: var(--bg-card);
-  color: var(--text-main);
-  font-size: 0.95rem;
-  font-weight: 600;
-  outline: none;
-}
-.form-control:focus { border-color: var(--primary); }
-
-.metric-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.25rem;
-  margin-bottom: 2rem;
-}
-.metric-card {
-  background: var(--bg-card);
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  box-shadow: var(--shadow-sm);
-}
-.metric-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 0.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  background: var(--primary-light);
-  color: var(--primary);
-}
-
-.table-container {
-  background: var(--bg-card);
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  overflow-x: auto;
-  box-shadow: var(--shadow-sm);
-}
-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
-th {
-  background: var(--bg-elevated);
-  padding: 0.85rem 1rem;
-  border-bottom: 2px solid var(--border-color);
-  color: var(--text-muted);
-  font-weight: 800;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-}
-td { padding: 1rem; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
-tr:hover td { background: var(--bg-elevated); }
-
-.site-footer {
-  margin-top: auto;
-  background: var(--bg-card);
-  border-top: 2px solid var(--border-color);
-  padding: 2rem 0;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-.footer-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-  </style>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <!-- Header -->
   <header class="site-header">
     <div class="container">
       <div class="header-inner">
-        <!-- Logo -->
-        <a href="/" class="brand">
+                <a href="/" class="brand">
           <span class="badge-logo">ND</span>
           <span>Lesson Companion &bull; Teacher Portal</span>
         </a>
 
-        <!-- Accessibility Controls -->
-        <div class="accessibility-bar" role="region" aria-label="Accessibility Settings">
+                <div class="accessibility-bar" role="region" aria-label="Accessibility Settings">
           <select id="themeSelect" onchange="changeTheme(this.value)" aria-label="Visual Theme">
             <option value="default">Default Slate</option>
             <option value="sage">Sage Calm (Green)</option>
@@ -331,8 +28,7 @@ tr:hover td { background: var(--bg-elevated); }
           <button type="button" onclick="adjustFontSize(1)">A+</button>
         </div>
 
-        <!-- Navigation Links -->
-        <nav style="display: flex; gap: 0.75rem; align-items: center;">
+                <nav style="display: flex; gap: 0.75rem; align-items: center;">
           <a href="/" class="btn btn-secondary btn-sm">
             &larr; Back to Student Lessons
           </a>
@@ -373,9 +69,10 @@ tr:hover td { background: var(--bg-elevated); }
         <!-- Sign In Form -->
         <div id="loginFormContainer">
           <div style="background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.85rem;">
-            <strong style="color: var(--primary);">Demo Teacher Credentials:</strong>
-            <div>Email: <code>teacher@school.edu</code></div>
-            <div>Password: <code>teacher123</code></div>
+            <strong style="color: var(--primary);">Demo Teacher Accounts:</strong>
+            <div style="margin-top:0.4rem;"><code>teacher@school.edu</code> / <code>teacher123</code> &mdash; Ms. Henderson (Code: BIO-101)</div>
+            <div style="margin-top:0.25rem;"><code>mr.davis@school.edu</code> / <code>davis2026</code> &mdash; Mr. Davis (Code: MATH-5A)</div>
+            <div style="margin-top:0.25rem;"><code>ms.reyes@school.edu</code> / <code>reyes2026</code> &mdash; Ms. Reyes (Code: EARTH-2026)</div>
           </div>
 
           <form onsubmit="handleLogin(event)">
@@ -639,7 +336,6 @@ tr:hover td { background: var(--bg-elevated); }
       storageBucket: "neurodivergent-app-15a25.firebasestorage.app",
       messagingSenderId: "858987650546",
       appId: "1:858987650546:web:0f53a2f044f56e2e0b1f6b",
-      measurementId: "G-0KY8HLFTZX"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -750,7 +446,7 @@ tr:hover td { background: var(--bg-elevated); }
           <td>
             <div style="display: flex; gap: 0.4rem;">
               <a href="/?code=${encodeURIComponent(l.student_code)}" class="btn btn-secondary btn-sm" target="_blank">View</a>
-              <button type="button" class="btn btn-secondary btn-sm" onclick="editLesson('${l.id}')">Edit</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick=\"toggleLessonForm(true,'${l.id}')\">Edit</button>
               <button type="button" class="btn btn-danger btn-sm" onclick="deleteLesson('${l.id}')">Delete</button>
             </div>
           </td>
@@ -771,12 +467,14 @@ tr:hover td { background: var(--bg-elevated); }
       const email = document.getElementById('loginEmail').value.trim().toLowerCase();
       const pass = document.getElementById('loginPassword').value;
 
-      if (email === 'teacher@school.edu' && pass === 'teacher123') {
-        currentTeacher = {
-          name: "Ms. Henderson",
-          email: "teacher@school.edu",
-          student_code: "BIO-101"
-        };
+      const demoAccounts = [
+        { name: "Ms. Henderson", email: "teacher@school.edu", password: "teacher123", student_code: "BIO-101" },
+        { name: "Mr. Davis",     email: "mr.davis@school.edu", password: "davis2026",  student_code: "MATH-5A" },
+        { name: "Ms. Reyes",    email: "ms.reyes@school.edu", password: "reyes2026",  student_code: "EARTH-2026" }
+      ];
+      const demo = demoAccounts.find(a => a.email === email && a.password === pass);
+      if (demo) {
+        currentTeacher = { name: demo.name, email: demo.email, student_code: demo.student_code };
       } else {
         const saved = JSON.parse(localStorage.getItem('nd_teachers') || '[]');
         const t = saved.find(x => x.email === email && x.password === pass);
@@ -862,10 +560,6 @@ tr:hover td { background: var(--bg-elevated); }
         document.getElementById('formTerms').value = '';
       }
       section.scrollIntoView({ behavior: 'smooth' });
-    };
-
-    window.editLesson = function(id) {
-      toggleLessonForm(true, id);
     };
 
     window.deleteLesson = async function(id) {
