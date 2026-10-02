@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="default">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Portal - Neurodivergent Lesson Companion</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+/* Modern Accessible Styling with Calming Themes for Neurodivergent Learners */
+:root {
+  --bg-primary: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-elevated: #f1f5f9;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --border-color: #cbd5e1;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: #dbeafe;
+  --accent-calm: #8b5cf6;
+  --accent-calm-light: #ede9fe;
+  --success: #059669;
+  --success-light: #d1fae5;
+  --warning: #d97706;
+  --warning-light: #fef3c7;
+  --danger: #dc2626;
+  --danger-light: #fee2e2;
+  --font-base: 16px;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
+[data-theme="sage"] {
+  --bg-primary: #f4f7f4;
+  --bg-card: #ffffff;
+  --bg-elevated: #e8efe8;
+  --text-main: #142a1b;
+  --text-muted: #395240;
+  --border-color: #c4d7c6;
+  --primary: #2d6a4f;
+  --primary-hover: #1b4332;
+  --primary-light: #d8f3dc;
+  --accent-calm: #52796f;
+  --accent-calm-light: #dbe7e4;
+}
+
+[data-theme="sand"] {
+  --bg-primary: #faf6f0;
+  --bg-card: #fffdfa;
+  --bg-elevated: #f3ede2;
+  --text-main: #29221b;
+  --text-muted: #5e5246;
+  --border-color: #ded1c1;
+  --primary: #b45309;
+  --primary-hover: #92400e;
+  --primary-light: #fef3c7;
+  --accent-calm: #8d5b4c;
+  --accent-calm-light: #f5ebe6;
+}
+
+[data-theme="ocean"] {
+  --bg-primary: #f0f7fa;
+  --bg-card: #ffffff;
+  --bg-elevated: #e2eff5;
+  --text-main: #0c2333;
+  --text-muted: #315166;
+  --border-color: #bcd4e3;
+  --primary: #0284c7;
+  --primary-hover: #0369a1;
+  --primary-light: #e0f2fe;
+}
+
+[data-theme="contrast"] {
+  --bg-primary: #000000;
+  --bg-card: #121212;
+  --bg-elevated: #242424;
+  --text-main: #ffffff;
+  --text-muted: #e2e8f0;
+  --border-color: #ffff00;
+  --primary: #ffff00;
+  --primary-hover: #e6e600;
+  --primary-light: #333300;
+  --accent-calm: #00ffff;
+  --accent-calm-light: #003333;
+}
+
+html {
+  font-size: var(--font-base);
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text-main);
+  background-color: var(--bg-primary);
+  line-height: 1.6;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+*, *:before, *:after { box-sizing: inherit; }
+
+h1, h2, h3, h4 {
+  color: var(--text-main);
+  line-height: 1.3;
+  font-weight: 800;
+  margin-top: 0;
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  width: 100%;
+}
+
+.site-header {
+  background: var(--bg-card);
+  border-bottom: 2px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--text-main);
+  text-decoration: none;
+}
+.brand span.badge-logo {
+  background: linear-gradient(135deg, var(--primary), var(--accent-calm));
+  color: #ffffff;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.accessibility-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--bg-elevated);
+  padding: 0.3rem 0.6rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.accessibility-bar select, .accessibility-bar button {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.15s ease-in-out;
+  text-decoration: none !important;
+}
+
+.btn-primary { background-color: var(--primary); color: #ffffff !important; }
+.btn-primary:hover { background-color: var(--primary-hover); transform: translateY(-1px); }
+
+.btn-secondary { background-color: var(--bg-card); border-color: var(--border-color); color: var(--text-main) !important; }
+.btn-secondary:hover { background-color: var(--bg-elevated); }
+
+.btn-calm { background-color: var(--accent-calm); color: #ffffff !important; }
+.btn-danger { background-color: var(--danger); color: #ffffff !important; }
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; border-radius: 0.5rem; }
+
+.badge {
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+.badge-code { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+.badge-subject { background: var(--primary-light); color: var(--primary); }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+.form-control {
+  padding: 0.75rem 0.95rem;
+  border: 2px solid var(--border-color);
+  border-radius: 0.65rem;
+  background: var(--bg-card);
+  color: var(--text-main);
+  font-size: 0.95rem;
+  font-weight: 600;
+  outline: none;
+}
+.form-control:focus { border-color: var(--primary); }
+
+.metric-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+.metric-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+.metric-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.table-container {
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  box-shadow: var(--shadow-sm);
+}
+table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
+th {
+  background: var(--bg-elevated);
+  padding: 0.85rem 1rem;
+  border-bottom: 2px solid var(--border-color);
+  color: var(--text-muted);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+td { padding: 1rem; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+tr:hover td { background: var(--bg-elevated); }
+
+.site-footer {
+  margin-top: auto;
+  background: var(--bg-card);
+  border-top: 2px solid var(--border-color);
+  padding: 2rem 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <!-- Logo -->
+        <a href="/" class="brand">
+          <span class="badge-logo">ND</span>
+          <span>Lesson Companion &bull; Teacher Portal</span>
+        </a>
+
+        <!-- Accessibility Controls -->
+        <div class="accessibility-bar" role="region" aria-label="Accessibility Settings">
+          <select id="themeSelect" onchange="changeTheme(this.value)" aria-label="Visual Theme">
+            <option value="default">Default Slate</option>
+            <option value="sage">Sage Calm (Green)</option>
+            <option value="sand">Warm Sand (Amber)</option>
+            <option value="ocean">Ocean Calm (Blue)</option>
+            <option value="contrast">High Contrast (AAA)</option>
+          </select>
+          <button type="button" onclick="adjustFontSize(-1)">A-</button>
+          <button type="button" onclick="adjustFontSize(1)">A+</button>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav style="display: flex; gap: 0.75rem; align-items: center;">
+          <a href="/" class="btn btn-secondary btn-sm">
+            &larr; Back to Student Lessons
+          </a>
+          <button type="button" id="logoutNavBtn" class="btn btn-danger btn-sm" style="display: none;" onclick="handleTeacherLogout()">
+            Sign Out
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="container" style="flex: 1; padding-top: 2rem; padding-bottom: 3rem;">
+
+    <!-- STATE 1: AUTHENTICATION (Sign In / Sign Up) -->
+    <div id="authSection" style="max-width: 500px; margin: 1rem auto;">
+      <div style="background: var(--bg-card); border: 2px solid var(--border-color); border-radius: var(--radius-xl); padding: 2.25rem; box-shadow: var(--shadow-md);">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+          <div style="width: 60px; height: 60px; border-radius: 1rem; background: var(--accent-calm-light); color: var(--accent-calm); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 0.75rem;">
+            🔐
+          </div>
+          <h1 style="font-size: 1.8rem; margin-bottom: 0.35rem;">Teacher's Portal</h1>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+            Sign in to get your class code for students, upload lessons, and manage video transcripts.
+          </p>
+        </div>
+
+        <!-- Switch Tabs -->
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+          <button type="button" id="tabLoginBtn" class="btn btn-primary" style="flex: 1;" onclick="switchTab('login')">
+            Sign In
+          </button>
+          <button type="button" id="tabSignupBtn" class="btn btn-secondary" style="flex: 1;" onclick="switchTab('signup')">
+            Create Account
+          </button>
+        </div>
+
+        <!-- Sign In Form -->
+        <div id="loginFormContainer">
+          <div style="background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.85rem;">
+            <strong style="color: var(--primary);">Demo Teacher Credentials:</strong>
+            <div>Email: <code>teacher@school.edu</code></div>
+            <div>Password: <code>teacher123</code></div>
+          </div>
+
+          <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="loginEmail">Teacher Email Address</label>
+              <input type="email" id="loginEmail" class="form-control" value="teacher@school.edu" required>
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input type="password" id="loginPassword" class="form-control" value="teacher123" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem; margin-top: 0.5rem;">
+              Sign In to Teacher Dashboard &rarr;
+            </button>
+          </form>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div id="signupFormContainer" style="display: none;">
+          <form onsubmit="handleSignup(event)">
+            <div class="form-group">
+              <label for="signupName">Teacher Name / Title</label>
+              <input type="text" id="signupName" class="form-control" placeholder="e.g. Ms. Henderson" required>
+            </div>
+            <div class="form-group">
+              <label for="signupEmail">School Email Address</label>
+              <input type="email" id="signupEmail" class="form-control" placeholder="teacher@school.edu" required>
+            </div>
+            <div class="form-group">
+              <label for="signupCode">Primary Student Access Code (Code you give your students)</label>
+              <input type="text" id="signupCode" class="form-control" placeholder="e.g. BIO-101" style="text-transform: uppercase;" required>
+              <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem;">
+                Students type this code on the home page to access your lessons without passwords.
+              </small>
+            </div>
+            <div class="form-group">
+              <label for="signupPassword">Password (Minimum 6 characters)</label>
+              <input type="password" id="signupPassword" class="form-control" minlength="6" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem; margin-top: 0.5rem;">
+              Register & Open Dashboard &rarr;
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATE 2: DEDICATED TEACHER DASHBOARD (When Logged In) -->
+    <div id="dashboardSection" style="display: none;">
+      <!-- Teacher Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+        <div>
+          <span class="badge" style="background: var(--accent-calm-light); color: var(--accent-calm); font-weight: 800;">
+            Educator & Administrator Management
+          </span>
+          <h1 style="font-size: 2.2rem; margin: 0.35rem 0 0 0;">
+            Teacher Dashboard: <span id="teacherNameDisplay"></span>
+          </h1>
+          <p style="color: var(--text-muted); margin: 0.25rem 0 0 0; font-size: 0.95rem;">
+            Logged in as: <code id="teacherEmailDisplay"></code>
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="button" class="btn btn-primary" onclick="toggleLessonForm(true)">
+            + Upload / Create New Lesson
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="handleTeacherLogout()">
+            Sign Out
+          </button>
+        </div>
+      </div>
+
+      <!-- Prominent Student Access Code Card -->
+      <section style="background: linear-gradient(135deg, #065f46, #047857, #059669); color: #ffffff; border-radius: var(--radius-xl); padding: 1.75rem 2rem; margin-bottom: 2rem; box-shadow: var(--shadow-md);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span style="text-transform: uppercase; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.05em; background: rgba(255,255,255,0.2); padding: 0.2rem 0.6rem; border-radius: 0.4rem;">
+              Student Access Code
+            </span>
+            <h2 style="color: #ffffff; font-size: 1.8rem; margin: 0.4rem 0 0.2rem 0;">
+              Code for Your Students: <span id="studentCodeDisplay" style="font-family: monospace; background: rgba(0,0,0,0.3); padding: 0.2rem 0.75rem; border-radius: 0.5rem; letter-spacing: 0.05em; font-weight: 900;"></span>
+            </h2>
+            <p style="color: #d1fae5; margin: 0; font-size: 0.95rem; max-width: 650px;">
+              Provide this code to your students. They can enter it on the homepage to access your classroom lessons immediately without needing an account or password.
+            </p>
+          </div>
+
+          <div>
+            <button
+              type="button"
+              id="copyCodeBtn"
+              class="btn btn-secondary"
+              onclick="copyStudentCode()"
+              style="background: #ffffff; color: #065f46 !important; font-weight: 800; border: none; font-size: 1rem; padding: 0.75rem 1.5rem;"
+            >
+              📋 Copy Student Code
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dashboard Metrics -->
+      <div class="metric-cards">
+        <div class="metric-card">
+          <div class="metric-icon">🎥</div>
+          <div>
+            <div id="statTotalLessons" style="font-size: 1.75rem; font-weight: 900;">0</div>
+            <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">
+              Total Lessons
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon">📖</div>
+          <div>
+            <div id="statTotalTerms" style="font-size: 1.75rem; font-weight: 900;">0</div>
+            <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">
+              Key Terms Defined
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon">☁️</div>
+          <div>
+            <div style="font-size: 1.1rem; font-weight: 900; color: var(--primary);">Firebase Firestore</div>
+            <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">
+              Cloud Database
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREATE / EDIT LESSON FORM (INLINE DEDICATED SECTION) -->
+      <div id="lessonFormSection" style="display: none; background: var(--bg-card); border: 2px solid var(--primary); border-radius: var(--radius-xl); padding: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow-md);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 id="lessonFormHeader" style="margin: 0; font-size: 1.5rem;">Create New Lesson</h2>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="toggleLessonForm(false)">✕ Close Form</button>
+        </div>
+
+        <form onsubmit="handleSaveLesson(event)">
+          <input type="hidden" id="editLessonId">
+
+          <div class="form-group">
+            <label for="formTitle">Lesson Title *</label>
+            <input type="text" id="formTitle" class="form-control" placeholder="e.g. Introduction to Photosynthesis: How Plants Make Food" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="formSubject">Subject *</label>
+              <select id="formSubject" class="form-control">
+                <option value="Science">Science</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="English">English</option>
+                <option value="History">History</option>
+                <option value="Art">Art</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="formGrade">Grade Level *</label>
+              <select id="formGrade" class="form-control">
+                <option value="Elementary">Elementary (Grades 3-5)</option>
+                <option value="Middle School">Middle School (Grades 6-8)</option>
+                <option value="High School">High School (Grades 9-12)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="formCode">Student Access Code *</label>
+              <input type="text" id="formCode" class="form-control" style="text-transform: uppercase;" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="formVideoUrl">Video URL or Local File Path *</label>
+              <input type="text" id="formVideoUrl" class="form-control" value="/samples/photosynthesis.mp4" required>
+            </div>
+            <div class="form-group">
+              <label for="formDuration">Duration (Seconds) *</label>
+              <input type="number" id="formDuration" class="form-control" value="180" min="1" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="formDescription">Description</label>
+            <textarea id="formDescription" class="form-control" rows="2" placeholder="Overview of the lesson topic..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="formTerms">Key Terms (One per line format: <code>Term: Explanation</code>)</label>
+            <textarea id="formTerms" class="form-control" rows="3" placeholder="Photosynthesis: How plants turn sunlight into energy.&#10;Chlorophyll: Green pigment inside leaves."></textarea>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem;">
+            <button type="button" class="btn btn-secondary" onclick="toggleLessonForm(false)">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">
+              Save Lesson to Cloud DB
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Lessons Management Table -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 style="font-size: 1.4rem; margin: 0;">Lesson Management (CRUD Operations)</h2>
+        <button type="button" class="btn btn-primary btn-sm" onclick="toggleLessonForm(true)">
+          + Add Lesson
+        </button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Lesson Title & Summary</th>
+              <th>Subject</th>
+              <th>Grade</th>
+              <th>Student Code</th>
+              <th>Duration</th>
+              <th>Key Terms</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="lessonsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <strong>Neurodivergent Lesson Companion</strong> &bull; Teacher Portal
+          <div style="font-size: 0.8rem; margin-top: 0.25rem;">
+            Firebase Project: <code>neurodivergent-app-15a25</code> &bull; Online Hosting
+          </div>
+        </div>
+        <div>
+          <a href="/" class="btn btn-secondary btn-sm">&larr; Return to Student Lessons</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase Modular SDK & Management Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, doc, setDoc, deleteDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDxVb9pD2outFE7yO6fd8vBSM61qh_0qWk",
+      authDomain: "neurodivergent-app-15a25.firebaseapp.com",
+      projectId: "neurodivergent-app-15a25",
+      storageBucket: "neurodivergent-app-15a25.firebasestorage.app",
+      messagingSenderId: "858987650546",
+      appId: "1:858987650546:web:0f53a2f044f56e2e0b1f6b",
+      measurementId: "G-0KY8HLFTZX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Initial Starter Lessons for Fallback
+    const INITIAL_LESSONS = [
+      {
+        id: "lesson_photosynthesis",
+        title: "Introduction to Photosynthesis: How Plants Make Food",
+        subject: "Science",
+        grade_level: "Elementary",
+        student_code: "BIO-101",
+        description: "A gentle introduction to how green plants turn sunlight, water, and air into energy and oxygen.",
+        video_url: "/samples/photosynthesis.mp4",
+        duration: 180,
+        key_terms: [
+          { term: "Photosynthesis", explanation: "Plants making food from sunlight, water, and air." },
+          { term: "Chlorophyll", explanation: "Natural green pigment that traps sunlight." }
+        ]
+      },
+      {
+        id: "lesson_water_cycle",
+        title: "The Water Cycle: Earth's Natural Recycling System",
+        subject: "Science",
+        grade_level: "Elementary",
+        student_code: "EARTH-2026",
+        description: "Discover how water moves through evaporation, condensation, and precipitation.",
+        video_url: "/samples/water-cycle.mp4",
+        duration: 150,
+        key_terms: [
+          { term: "Evaporation", explanation: "Water rising as vapor." },
+          { term: "Condensation", explanation: "Water cooling into clouds." }
+        ]
+      },
+      {
+        id: "lesson_fractions",
+        title: "Understanding Fractions: Parts of a Whole",
+        subject: "Mathematics",
+        grade_level: "Elementary",
+        student_code: "MATH-5A",
+        description: "Learn how equal shares create halves, thirds, and quarters with pizza slices.",
+        video_url: "/samples/photosynthesis.mp4",
+        duration: 120,
+        key_terms: [
+          { term: "Numerator", explanation: "Top number." },
+          { term: "Denominator", explanation: "Bottom number." }
+        ]
+      }
+    ];
+
+    let allLessons = JSON.parse(localStorage.getItem('nd_lessons') || 'null') || INITIAL_LESSONS;
+    let currentTeacher = JSON.parse(localStorage.getItem('nd_current_teacher') || 'null');
+
+    // Sync with Firestore
+    async function loadData() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "lessons"));
+        if (!querySnapshot.empty) {
+          const list = [];
+          querySnapshot.forEach(docSnap => {
+            list.push({ id: docSnap.id, ...docSnap.data() });
+          });
+          allLessons = list;
+          localStorage.setItem('nd_lessons', JSON.stringify(allLessons));
+        }
+      } catch (e) {
+        console.warn("Firestore note:", e);
+      }
+      renderView();
+    }
+
+    function renderView() {
+      if (currentTeacher) {
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('dashboardSection').style.display = 'block';
+        document.getElementById('logoutNavBtn').style.display = 'inline-flex';
+
+        document.getElementById('teacherNameDisplay').textContent = currentTeacher.name;
+        document.getElementById('teacherEmailDisplay').textContent = currentTeacher.email;
+        document.getElementById('studentCodeDisplay').textContent = currentTeacher.student_code;
+
+        renderTable();
+      } else {
+        document.getElementById('authSection').style.display = 'block';
+        document.getElementById('dashboardSection').style.display = 'none';
+        document.getElementById('logoutNavBtn').style.display = 'none';
+      }
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('lessonsTableBody');
+      document.getElementById('statTotalLessons').textContent = allLessons.length;
+      const termsCount = allLessons.reduce((acc, l) => acc + (l.key_terms || []).length, 0);
+      document.getElementById('statTotalTerms').textContent = termsCount;
+
+      tbody.innerHTML = allLessons.map(l => `
+        <tr>
+          <td>
+            <strong>${l.title}</strong>
+            <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.2rem;">${l.description || ''}</div>
+          </td>
+          <td><span class="badge badge-subject">${l.subject}</span></td>
+          <td><span class="badge">${l.grade_level}</span></td>
+          <td><span class="badge badge-code">${l.student_code}</span></td>
+          <td style="font-family: monospace; font-weight: 700;">${Math.floor(l.duration/60)}:${String(Math.floor(l.duration%60)).padStart(2,'0')}</td>
+          <td><span class="badge">${(l.key_terms || []).length} terms</span></td>
+          <td>
+            <div style="display: flex; gap: 0.4rem;">
+              <a href="/?code=${encodeURIComponent(l.student_code)}" class="btn btn-secondary btn-sm" target="_blank">View</a>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="editLesson('${l.id}')">Edit</button>
+              <button type="button" class="btn btn-danger btn-sm" onclick="deleteLesson('${l.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    window.switchTab = function(tab) {
+      const isLogin = tab === 'login';
+      document.getElementById('loginFormContainer').style.display = isLogin ? 'block' : 'none';
+      document.getElementById('signupFormContainer').style.display = isLogin ? 'none' : 'block';
+      document.getElementById('tabLoginBtn').className = `btn btn-${isLogin ? 'primary' : 'secondary'}`;
+      document.getElementById('tabSignupBtn').className = `btn btn-${isLogin ? 'secondary' : 'primary'}`;
+    };
+
+    window.handleLogin = function(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('loginPassword').value;
+
+      if (email === 'teacher@school.edu' && pass === 'teacher123') {
+        currentTeacher = {
+          name: "Ms. Henderson",
+          email: "teacher@school.edu",
+          student_code: "BIO-101"
+        };
+      } else {
+        const saved = JSON.parse(localStorage.getItem('nd_teachers') || '[]');
+        const t = saved.find(x => x.email === email && x.password === pass);
+        if (t) {
+          currentTeacher = t;
+        } else {
+          alert("Invalid teacher email or password.");
+          return;
+        }
+      }
+
+      localStorage.setItem('nd_current_teacher', JSON.stringify(currentTeacher));
+      renderView();
+    };
+
+    window.handleSignup = async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+      const code = document.getElementById('signupCode').value.trim().toUpperCase();
+      const pass = document.getElementById('signupPassword').value;
+
+      const newTeacher = {
+        name, email, student_code: code, password: pass
+      };
+
+      try {
+        await setDoc(doc(db, "teachers", email.replace(/[^a-z0-9]/g, '_')), newTeacher);
+      } catch (err) {
+        console.warn("Firestore save notice:", err);
+      }
+
+      const saved = JSON.parse(localStorage.getItem('nd_teachers') || '[]');
+      saved.push(newTeacher);
+      localStorage.setItem('nd_teachers', JSON.stringify(saved));
+
+      currentTeacher = newTeacher;
+      localStorage.setItem('nd_current_teacher', JSON.stringify(currentTeacher));
+      alert(`Account created! Your student access code is ${code}.`);
+      renderView();
+    };
+
+    window.handleTeacherLogout = function() {
+      currentTeacher = null;
+      localStorage.removeItem('nd_current_teacher');
+      renderView();
+    };
+
+    window.copyStudentCode = function() {
+      const code = currentTeacher.student_code;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('copyCodeBtn');
+        const orig = btn.textContent;
+        btn.textContent = "✅ Copied Code: " + code;
+        setTimeout(() => { btn.textContent = orig; }, 2500);
+      });
+    };
+
+    window.toggleLessonForm = function(show, editId) {
+      const section = document.getElementById('lessonFormSection');
+      section.style.display = show ? 'block' : 'none';
+      if (!show) return;
+
+      document.getElementById('editLessonId').value = editId || '';
+      document.getElementById('lessonFormHeader').textContent = editId ? 'Edit Lesson' : 'Create New Lesson';
+
+      if (editId) {
+        const l = allLessons.find(x => x.id === editId);
+        if (l) {
+          document.getElementById('formTitle').value = l.title;
+          document.getElementById('formSubject').value = l.subject;
+          document.getElementById('formGrade').value = l.grade_level;
+          document.getElementById('formCode').value = l.student_code;
+          document.getElementById('formVideoUrl').value = l.video_url;
+          document.getElementById('formDuration').value = l.duration;
+          document.getElementById('formDescription').value = l.description || '';
+          document.getElementById('formTerms').value = (l.key_terms || []).map(t => `${t.term}: ${t.explanation}`).join('\n');
+        }
+      } else {
+        document.getElementById('formTitle').value = '';
+        document.getElementById('formCode').value = currentTeacher.student_code;
+        document.getElementById('formDescription').value = '';
+        document.getElementById('formTerms').value = '';
+      }
+      section.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    window.editLesson = function(id) {
+      toggleLessonForm(true, id);
+    };
+
+    window.deleteLesson = async function(id) {
+      if (!confirm("Are you sure you want to delete this lesson?")) return;
+      try {
+        await deleteDoc(doc(db, "lessons", id));
+      } catch (err) {
+        console.warn("Firestore delete notice:", err);
+      }
+      allLessons = allLessons.filter(l => l.id !== id);
+      localStorage.setItem('nd_lessons', JSON.stringify(allLessons));
+      renderTable();
+    };
+
+    window.handleSaveLesson = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('editLessonId').value || ('lesson_' + Date.now());
+      const rawTerms = document.getElementById('formTerms').value.trim();
+      const keyTerms = rawTerms.split('\n').filter(Boolean).map(line => {
+        const parts = line.split(':');
+        return { term: parts[0].trim(), explanation: (parts[1] || '').trim() };
+      });
+
+      const lessonData = {
+        id,
+        title: document.getElementById('formTitle').value.trim(),
+        subject: document.getElementById('formSubject').value,
+        grade_level: document.getElementById('formGrade').value,
+        student_code: document.getElementById('formCode').value.trim().toUpperCase(),
+        video_url: document.getElementById('formVideoUrl').value.trim(),
+        duration: parseFloat(document.getElementById('formDuration').value) || 180,
+        description: document.getElementById('formDescription').value.trim(),
+        key_terms: keyTerms,
+        segments: [
+          { index: 0, startTime: 0, endTime: 60, text: document.getElementById('formTitle').value },
+          { index: 1, startTime: 60, endTime: 180, text: document.getElementById('formDescription').value || "Core concept explanation." }
+        ]
+      };
+
+      try {
+        await setDoc(doc(db, "lessons", id), lessonData);
+      } catch (err) {
+        console.warn("Firestore save notice:", err);
+      }
+
+      const existingIdx = allLessons.findIndex(l => l.id === id);
+      if (existingIdx >= 0) allLessons[existingIdx] = lessonData;
+      else allLessons.unshift(lessonData);
+
+      localStorage.setItem('nd_lessons', JSON.stringify(allLessons));
+      toggleLessonForm(false);
+      renderTable();
+      alert("Lesson saved successfully!");
+    };
+
+    loadData();
+  </script>
+
+  <!-- Theme Sizer Scripts -->
+  <script>
+    function changeTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('nd_theme', theme);
+    }
+    const t = localStorage.getItem('nd_theme');
+    if (t) {
+      document.documentElement.setAttribute('data-theme', t);
+      const sel = document.getElementById('themeSelect');
+      if (sel) sel.value = t;
+    }
+    let fs = parseInt(localStorage.getItem('nd_fontSize') || '16', 10);
+    function adjustFontSize(d) {
+      fs = Math.min(24, Math.max(14, fs + d * 2));
+      document.documentElement.style.setProperty('--font-base', fs + 'px');
+      localStorage.setItem('nd_fontSize', fs);
+    }
+  </script>
+</body>
+</html>
