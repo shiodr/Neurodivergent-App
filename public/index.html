@@ -1,111 +1,470 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="default">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Neurodivergent Lesson Companion - Firebase Online Hosting</title>
+  <title>Neurodivergent Lesson Companion - Firebase Web App</title>
+  <link rel="stylesheet" href="/static/css/style.css">
   <style>
+    /* Inlined essentials in case static/css is served statically */
     :root {
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #0f172a;
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-elevated: #f1f5f9;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #cbd5e1;
       --primary: #2563eb;
-      --accent: #7c3aed;
-      --border: #e2e8f0;
+      --accent-calm: #8b5cf6;
+      --accent-calm-light: #ede9fe;
+      --success: #059669;
+      --font-base: 16px;
     }
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
-    header {
-      background: var(--card);
-      border-bottom: 2px solid var(--border);
-      padding: 1rem 0;
-    }
-    .hero {
-      background: linear-gradient(135deg, #1e3a8a, #4338ca, #6b21a8);
-      color: white;
-      padding: 3rem 2rem;
-      border-radius: 1.5rem;
-      margin: 2rem 0;
-      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
-    }
-    .hero h1 { margin: 0 0 0.5rem 0; font-size: 2.4rem; }
-    .hero p { color: #e0e7ff; font-size: 1.1rem; max-width: 650px; }
-    .code-box {
-      margin-top: 1.5rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-main);
+      min-height: 100vh;
       display: flex;
-      gap: 0.75rem;
-      max-width: 480px;
-      flex-wrap: wrap;
+      flex-direction: column;
     }
-    .code-box input {
-      flex: 1;
-      padding: 0.8rem 1rem;
-      border-radius: 0.75rem;
-      border: 2px solid white;
-      font-size: 1.1rem;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    .btn {
-      padding: 0.8rem 1.5rem;
-      border-radius: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.7);
+      display: none;
       align-items: center;
       justify-content: center;
-      border: none;
+      z-index: 200;
+      padding: 1rem;
+      backdrop-filter: blur(4px);
     }
-    .btn-green { background: #10b981; color: white; }
-    .btn-primary { background: var(--primary); color: white; }
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin: 2rem 0;
-    }
-    .card {
-      background: var(--card);
-      border: 2px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.5rem;
-    }
-    .badge {
-      display: inline-block;
-      padding: 0.25rem 0.6rem;
-      border-radius: 0.5rem;
-      font-size: 0.8rem;
-      font-weight: 700;
-      background: #ede9fe;
-      color: var(--accent);
-      margin-bottom: 0.5rem;
-    }
-    footer {
-      text-align: center;
+    .modal-box {
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 1.5rem;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
       padding: 2rem;
-      color: #64748b;
-      font-size: 0.9rem;
-      border-top: 1px solid var(--border);
-      margin-top: 3rem;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
     }
   </style>
+</head>
+<body>
+  <!-- Header with Teacher Portal Button -->
+  <header class="site-header">
+    <div class="container">
+      <div class="header-inner">
+        <!-- Logo -->
+        <a href="/" class="brand">
+          <span class="badge-logo">ND</span>
+          <span>Lesson Companion</span>
+        </a>
 
-  <!-- Firebase Web App Configuration (User-Provided) -->
+        <!-- Accessibility Controls -->
+        <div class="accessibility-bar" role="region" aria-label="Accessibility Settings">
+          <select id="themeSelect" onchange="changeTheme(this.value)" aria-label="Visual Theme">
+            <option value="default">Default Slate</option>
+            <option value="sage">Sage Calm (Green)</option>
+            <option value="sand">Warm Sand (Amber)</option>
+            <option value="ocean">Ocean Calm (Blue)</option>
+            <option value="contrast">High Contrast (AAA)</option>
+          </select>
+          <button type="button" onclick="adjustFontSize(-1)" title="Smaller text">A-</button>
+          <button type="button" onclick="adjustFontSize(1)" title="Larger text">A+</button>
+        </div>
+
+        <!-- Navigation Bar -->
+        <nav class="nav-links">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="showAllLessons()">
+            All Lessons
+          </button>
+
+          <!-- Active Student Code Badge -->
+          <span id="activeCodeBadge" class="badge badge-code" style="display: none;">
+            Code: <strong id="activeCodeText"></strong>
+            <button onclick="clearStudentCode()" style="background: none; border: none; color: #b91c1c; font-weight: bold; cursor: pointer; margin-left: 4px;">✕</button>
+          </span>
+
+          <!-- TEACHER PORTAL BUTTON -->
+          <button type="button" id="teacherPortalNavBtn" class="btn btn-primary btn-sm" onclick="openTeacherModal()" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); border: none; font-weight: 800;">
+            🔐 Teacher Portal & Login
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Rules Notice Banner (if Firestore 403 locked) -->
+  <div id="rulesNoticeBanner" class="container" style="display: none; margin-top: 1rem;">
+    <div style="background: #fef2f2; border: 2px solid #f87171; border-radius: 1rem; padding: 1rem 1.25rem; color: #991b1b; font-size: 0.9rem;">
+      <strong>⚠️ Firestore Security Rules Locked (Status 403):</strong>
+      Your database is created, but rules currently say <code>allow read, write: if false;</code>.
+      In Firebase Console &gt; <strong>Firestore Database</strong> &gt; <strong>Rules</strong> tab, change to <code>allow read, write: if true;</code> and click <strong>Publish</strong>.
+      <em>(The app is running with local database fallback right now so everything works!)</em>
+    </div>
+  </div>
+
+  <main class="container" style="flex: 1; padding-top: 1rem; padding-bottom: 2rem;">
+    <!-- Teacher Portal Banner Shortcut -->
+    <div style="background: var(--bg-card); border: 2px solid var(--accent-calm); border-radius: 1rem; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.8rem;">👩‍🏫</span>
+        <div>
+          <strong style="color: var(--accent-calm); font-size: 1rem;">Are you a Teacher or Educator?</strong>
+          <div style="color: var(--text-muted); font-size: 0.85rem;">
+            Sign in to get your class code for students, upload lessons, and manage transcripts.
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-calm btn-sm" onclick="openTeacherModal()" style="font-weight: 800;">
+        Open Teacher's Login Portal &rarr;
+      </button>
+    </div>
+
+    <!-- Student Code Hero Banner -->
+    <section class="code-hero-card" role="region" aria-label="Student Code Entry">
+      <div style="max-width: 700px;">
+        <span class="badge" style="background: rgba(255,255,255,0.2); color: #ffffff; border: none; text-transform: uppercase; font-weight: 800; font-size: 0.75rem;">
+          Student Fast Access
+        </span>
+        <h1 style="font-size: 2.2rem; margin-top: 0.5rem; margin-bottom: 0.25rem;">
+          Enter Your Teacher's Class Code
+        </h1>
+        <p style="font-size: 1.05rem; opacity: 0.95;">
+          Did your teacher give you a classroom code? Type it below to instantly unlock your authorized video lessons without needing an account or password.
+        </p>
+
+        <div class="code-input-form">
+          <input
+            type="text"
+            id="studentCodeInput"
+            placeholder="e.g. BIO-101"
+            aria-label="Student Code"
+          >
+          <button type="button" class="btn btn-primary" onclick="applyStudentCode()" style="background: #10b981; border: none; font-weight: 800;">
+            Unlock Lessons
+          </button>
+        </div>
+
+        <!-- Sample Code Chips -->
+        <div style="margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; font-size: 0.85rem;">
+          <span style="opacity: 0.85;">Sample Class Codes:</span>
+          <button type="button" class="badge badge-code" onclick="quickApplyCode('BIO-101')" style="cursor: pointer;">BIO-101</button>
+          <button type="button" class="badge badge-code" onclick="quickApplyCode('EARTH-2026')" style="cursor: pointer;">EARTH-2026</button>
+          <button type="button" class="badge badge-code" onclick="quickApplyCode('MATH-5A')" style="cursor: pointer;">MATH-5A</button>
+          <button type="button" onclick="showAllLessons()" style="background: none; border: none; color: #fca5a5; font-weight: 700; cursor: pointer; text-decoration: underline;">
+            Show All Lessons
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Query, Filter & Sort Bar -->
+    <section class="filter-bar" role="search" aria-label="Search and filter lessons">
+      <div class="filter-grid">
+        <div class="form-group">
+          <label for="searchQuery">Search Lesson or Keyword</label>
+          <input type="text" id="searchQuery" class="form-control" placeholder="Search title, term, concept..." oninput="renderLessons()">
+        </div>
+
+        <div class="form-group">
+          <label for="filterSubject">Subject</label>
+          <select id="filterSubject" class="form-control" onchange="renderLessons()">
+            <option value="All">All Subjects</option>
+            <option value="Science">Science</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="English">English</option>
+            <option value="History">History</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="filterGrade">Grade Level</label>
+          <select id="filterGrade" class="form-control" onchange="renderLessons()">
+            <option value="All">All Grades</option>
+            <option value="Elementary">Elementary (Grades 3-5)</option>
+            <option value="Middle School">Middle School (Grades 6-8)</option>
+            <option value="High School">High School (Grades 9-12)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="sortBy">Sort By</label>
+          <select id="sortBy" class="form-control" onchange="renderLessons()">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title_asc">Title (A-Z)</option>
+            <option value="title_desc">Title (Z-A)</option>
+            <option value="duration_desc">Longest First</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="resetFilters()" style="height: 42px;">
+            Reset
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Header for Lessons Grid -->
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.25rem;">
+      <div>
+        <h2 style="font-size: 1.6rem; margin-bottom: 0.2rem;">Classroom Recorded Lessons</h2>
+        <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
+          Select any lesson below to view with synchronized captions, speed adjustments, and instant explanations.
+        </p>
+      </div>
+      <span id="lessonCountBadge" class="badge" style="font-size: 0.85rem; padding: 0.35rem 0.75rem;">
+        0 lessons
+      </span>
+    </div>
+
+    <!-- Lessons Grid Container -->
+    <div id="lessonsGrid" class="lessons-grid"></div>
+  </main>
+
+  <!-- TEACHER PORTAL MODAL (Login, Signup & Dashboard) -->
+  <div id="teacherModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+        <h2 id="teacherModalTitle" style="margin: 0; font-size: 1.5rem;">Teacher Portal</h2>
+        <button type="button" onclick="closeTeacherModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted);">✕</button>
+      </div>
+
+      <!-- VIEW 1: Teacher Auth (Sign in / Sign up) -->
+      <div id="teacherAuthView">
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+          <button type="button" id="tabLoginBtn" class="btn btn-primary btn-sm" onclick="switchTeacherTab('login')">
+            Sign In
+          </button>
+          <button type="button" id="tabSignupBtn" class="btn btn-secondary btn-sm" onclick="switchTeacherTab('signup')">
+            Create Account
+          </button>
+        </div>
+
+        <!-- Sub-view: Login Form -->
+        <div id="subLoginView">
+          <div style="background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.85rem;">
+            <strong style="color: var(--primary);">Demo Teacher Credentials:</strong>
+            <div>Email: <code>teacher@school.edu</code> &bull; Password: <code>teacher123</code></div>
+          </div>
+
+          <form onsubmit="handleTeacherLogin(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="form-group">
+              <label for="loginEmail">Email Address</label>
+              <input type="email" id="loginEmail" class="form-control" value="teacher@school.edu" required>
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input type="password" id="loginPassword" class="form-control" value="teacher123" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="padding: 0.8rem; font-size: 1rem; margin-top: 0.5rem;">
+              Sign In to Teacher Dashboard &rarr;
+            </button>
+          </form>
+        </div>
+
+        <!-- Sub-view: Signup Form -->
+        <div id="subSignupView" style="display: none;">
+          <form onsubmit="handleTeacherSignup(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div class="form-group">
+              <label for="signupName">Teacher Name / Title</label>
+              <input type="text" id="signupName" class="form-control" placeholder="e.g. Mr. Davis" required>
+            </div>
+            <div class="form-group">
+              <label for="signupEmail">Email Address</label>
+              <input type="email" id="signupEmail" class="form-control" placeholder="teacher@school.edu" required>
+            </div>
+            <div class="form-group">
+              <label for="signupCode">Primary Student Access Code (Code you give your students)</label>
+              <input type="text" id="signupCode" class="form-control" placeholder="e.g. BIO-101" style="text-transform: uppercase;" required>
+            </div>
+            <div class="form-group">
+              <label for="signupPassword">Password (Min 6 chars)</label>
+              <input type="password" id="signupPassword" class="form-control" minlength="6" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="padding: 0.8rem; font-size: 1rem; margin-top: 0.5rem;">
+              Create Teacher Account &rarr;
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- VIEW 2: Teacher Dashboard (When Logged In) -->
+      <div id="teacherDashboardView" style="display: none;">
+        <div style="background: linear-gradient(135deg, #065f46, #059669); color: white; border-radius: 1.25rem; padding: 1.5rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <span style="text-transform: uppercase; font-size: 0.75rem; font-weight: 800; background: rgba(255,255,255,0.2); padding: 0.2rem 0.5rem; border-radius: 0.4rem;">
+                Student Access Code
+              </span>
+              <h3 style="color: white; margin: 0.35rem 0; font-size: 1.5rem;">
+                Your Class Code: <span id="teacherCodeDisplay" style="font-family: monospace; background: rgba(0,0,0,0.25); padding: 0.2rem 0.6rem; border-radius: 0.4rem; font-weight: 900;"></span>
+              </h3>
+              <p style="margin: 0; color: #d1fae5; font-size: 0.85rem;">
+                Give this code to your students so they can view your classroom lessons without passwords.
+              </p>
+            </div>
+            <button type="button" id="copyStudentCodeBtn" class="btn btn-secondary" onclick="copyTeacherCode()" style="background: white; color: #065f46 !important; font-weight: 800; border: none;">
+              📋 Copy Code for Students
+            </button>
+          </div>
+        </div>
+
+        <!-- Dashboard Actions -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <h3 style="margin: 0;">Your Lessons (CRUD Management)</h3>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-primary btn-sm" onclick="openLessonFormModal('create')">
+              + Add New Lesson
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="handleTeacherLogout()">
+              Sign Out
+            </button>
+          </div>
+        </div>
+
+        <!-- Lessons Table -->
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead>
+              <tr style="background: var(--bg-elevated); border-bottom: 2px solid var(--border-color); text-align: left;">
+                <th style="padding: 0.75rem;">Title</th>
+                <th style="padding: 0.75rem;">Subject</th>
+                <th style="padding: 0.75rem;">Student Code</th>
+                <th style="padding: 0.75rem;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="teacherLessonsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LESSON FORM MODAL (Create & Edit) -->
+  <div id="lessonFormModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-box" style="max-width: 650px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;">
+        <h2 id="lessonFormTitle" style="margin: 0;">Add New Lesson</h2>
+        <button type="button" onclick="closeLessonFormModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form onsubmit="handleSaveLesson(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+        <input type="hidden" id="formLessonId">
+
+        <div class="form-group">
+          <label for="formTitle">Lesson Title *</label>
+          <input type="text" id="formTitle" class="form-control" required placeholder="e.g. Photosynthesis: How Plants Make Food">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label for="formSubject">Subject</label>
+            <select id="formSubject" class="form-control">
+              <option value="Science">Science</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="English">English</option>
+              <option value="History">History</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="formGrade">Grade Level</label>
+            <select id="formGrade" class="form-control">
+              <option value="Elementary">Elementary</option>
+              <option value="Middle School">Middle School</option>
+              <option value="High School">High School</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="formCode">Student Code *</label>
+            <input type="text" id="formCode" class="form-control" style="text-transform: uppercase;" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="formVideoUrl">Video URL or Local Sample</label>
+          <input type="text" id="formVideoUrl" class="form-control" value="/samples/photosynthesis.mp4" required>
+        </div>
+
+        <div class="form-group">
+          <label for="formDescription">Description</label>
+          <textarea id="formDescription" class="form-control" rows="2" placeholder="Brief lesson summary..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="formTerms">Key Terms (One per line: <code>Term: Explanation</code>)</label>
+          <textarea id="formTerms" class="form-control" rows="3" placeholder="Chlorophyll: Green pigment in leaves.&#10;Stomata: Pores under leaves."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeLessonFormModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Lesson</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- LESSON DETAIL PLAYER MODAL -->
+  <div id="lessonPlayerModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-box" style="max-width: 900px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeLessonPlayerModal()">
+          &larr; Back to Lessons
+        </button>
+        <button type="button" onclick="closeLessonPlayerModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
+      </div>
+
+      <div id="playerModalContent"></div>
+    </div>
+  </div>
+
+  <!-- SENSORY PAUSE (Box Breathing) MODAL -->
+  <div id="calmModal" class="modal-overlay" style="z-index: 300;">
+    <div class="modal-box" style="max-width: 480px; text-align: center;">
+      <h2 style="color: var(--accent-calm); margin-bottom: 0.25rem;">Guided Sensory Pause</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Follow the circle: Inhale, Hold, Exhale, Rest. Take as long as you need.
+      </p>
+      <div class="breathing-box">Breathe</div>
+      <button type="button" class="btn btn-primary" onclick="closeCalmModal()" style="margin-top: 1rem;">
+        I'm Ready to Resume
+      </button>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <strong>Neurodivergent Lesson Companion</strong> &bull; Accessible, low-distraction review.
+          <div style="font-size: 0.8rem; margin-top: 0.25rem;">
+            Firebase Project: <code>neurodivergent-app-15a25</code> &bull; Online Hosting Active
+          </div>
+        </div>
+        <div>
+          <span id="cloudStatusBadge" class="badge alert-success">
+            Database: Firebase Firestore (Online)
+          </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Firebase Web SDK Modular Setup & Client Database Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+    import {
+      getFirestore, collection, getDocs, doc, setDoc, deleteDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // User's exact Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDxVb9pD2outFE7yO6fd8vBSM61qh_0qWk",
       authDomain: "neurodivergent-app-15a25.firebaseapp.com",
@@ -116,106 +475,562 @@
       measurementId: "G-0KY8HLFTZX"
     };
 
-    // Initialize Firebase
-    try {
-      const app = initializeApp(firebaseConfig);
-      const analytics = getAnalytics(app);
-      console.log("Firebase App & Analytics Initialized successfully!");
-      document.getElementById('fbStatus').textContent = "Connected (neurodivergent-app-15a25)";
-      document.getElementById('fbStatus').style.color = "#059669";
-    } catch (err) {
-      console.warn("Firebase Notice:", err);
-      document.getElementById('fbStatus').textContent = "Configured (neurodivergent-app-15a25)";
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Initial Starter Seed Data for Resilience & Demo
+    const INITIAL_LESSONS = [
+      {
+        id: "lesson_photosynthesis",
+        title: "Introduction to Photosynthesis: How Plants Make Food",
+        subject: "Science",
+        grade_level: "Elementary",
+        student_code: "BIO-101",
+        teacher_name: "Ms. Henderson",
+        description: "A gentle introduction to how green plants turn sunlight, water, and air into energy and oxygen.",
+        summary: "Plants create food using sunlight, water, and carbon dioxide inside chloroplasts.",
+        video_url: "/samples/photosynthesis.mp4",
+        duration: 180,
+        key_terms: [
+          { term: "Photosynthesis", explanation: "Plants making food from sunlight, water, and air." },
+          { term: "Chlorophyll", explanation: "Natural green pigment that traps sunlight." },
+          { term: "Stomata", explanation: "Microscopic pores on leaf undersides that breathe in carbon dioxide." }
+        ],
+        segments: [
+          { index: 0, startTime: 0, endTime: 18, text: "Welcome everyone! Today we are exploring photosynthesis." },
+          { index: 1, startTime: 18, endTime: 60, text: "Inside plant cells are chloroplasts that catch sunlight." },
+          { index: 2, startTime: 60, endTime: 120, text: "Plants take in water from soil and carbon dioxide from the air." },
+          { index: 3, startTime: 120, endTime: 180, text: "The plant produces glucose for food and pure oxygen to breathe." }
+        ]
+      },
+      {
+        id: "lesson_water_cycle",
+        title: "The Water Cycle: Earth's Natural Recycling System",
+        subject: "Science",
+        grade_level: "Elementary",
+        student_code: "EARTH-2026",
+        teacher_name: "Ms. Henderson",
+        description: "Discover how water moves through evaporation, condensation, and precipitation.",
+        summary: "Water constantly cycles between the sky, ground, and oceans.",
+        video_url: "/samples/water-cycle.mp4",
+        duration: 150,
+        key_terms: [
+          { term: "Evaporation", explanation: "Liquid water warming up and rising as invisible vapor." },
+          { term: "Condensation", explanation: "Water vapor cooling to form clouds." },
+          { term: "Precipitation", explanation: "Rain, snow, or sleet falling back to Earth." }
+        ],
+        segments: [
+          { index: 0, startTime: 0, endTime: 30, text: "Hello learners! Today we discover the Earth's water cycle." },
+          { index: 1, startTime: 30, endTime: 85, text: "The sun warms oceans, turning liquid water into water vapor." },
+          { index: 2, startTime: 85, endTime: 150, text: "Water vapor cools into clouds and returns as rain." }
+        ]
+      },
+      {
+        id: "lesson_fractions",
+        title: "Understanding Fractions: Parts of a Whole",
+        subject: "Mathematics",
+        grade_level: "Elementary",
+        student_code: "MATH-5A",
+        teacher_name: "Ms. Henderson",
+        description: "Learn how equal shares create halves, thirds, and quarters with pizza slices.",
+        summary: "Fractions represent equal parts of a whole.",
+        video_url: "/samples/photosynthesis.mp4",
+        duration: 120,
+        key_terms: [
+          { term: "Numerator", explanation: "The top number showing how many slices you have." },
+          { term: "Denominator", explanation: "The bottom number showing total equal slices in all." }
+        ],
+        segments: [
+          { index: 0, startTime: 0, endTime: 60, text: "Welcome mathematicians! Let's explore fractions with pizza." },
+          { index: 1, startTime: 60, endTime: 120, text: "1 slice out of 4 equal slices is one quarter, or 1/4." }
+        ]
+      }
+    ];
+
+    let allLessons = JSON.parse(localStorage.getItem('nd_lessons') || 'null') || INITIAL_LESSONS;
+    let currentTeacher = JSON.parse(localStorage.getItem('nd_current_teacher') || 'null');
+    let activeStudentCode = localStorage.getItem('nd_active_code') || '';
+
+    // Sync with Firestore Cloud DB
+    async function syncWithFirestore() {
+      try {
+        const querySnapshot = await getDocs(collection(db, "lessons"));
+        if (!querySnapshot.empty) {
+          const cloudLessons = [];
+          querySnapshot.forEach(docSnap => {
+            cloudLessons.push({ id: docSnap.id, ...docSnap.data() });
+          });
+          allLessons = cloudLessons;
+          localStorage.setItem('nd_lessons', JSON.stringify(allLessons));
+          console.log("Synced lessons from Firestore:", allLessons.length);
+        } else {
+          // Upload initial seed to Firestore so cloud DB is pre-populated
+          console.log("Seeding initial lessons to Firestore...");
+          for (const l of INITIAL_LESSONS) {
+            await setDoc(doc(db, "lessons", l.id), l);
+          }
+        }
+        document.getElementById('cloudStatusBadge').textContent = "Database: Firebase Firestore (Online)";
+        document.getElementById('cloudStatusBadge').className = "badge alert-success";
+      } catch (err) {
+        console.warn("Firestore access note:", err.message);
+        if (err.code === "permission-denied" || err.message.includes("permission")) {
+          document.getElementById('rulesNoticeBanner').style.display = 'block';
+          document.getElementById('cloudStatusBadge').textContent = "Database: Local Standby (Rules Locked)";
+          document.getElementById('cloudStatusBadge').className = "badge alert-warning";
+        }
+      }
+      renderLessons();
+      updateTeacherNav();
     }
-  </script>
-</head>
-<body>
-  <header>
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1.5rem;">
-      <div style="font-weight: 900; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
-        <span style="background: #2563eb; color: white; padding: 0.2rem 0.5rem; border-radius: 0.5rem;">ND</span>
-        <span>Lesson Companion</span>
-      </div>
-      <div>
-        <span style="font-size: 0.85rem; font-weight: 700; color: #64748b;">
-          Firebase Status: <span id="fbStatus" style="font-weight: 800;">Connecting...</span>
-        </span>
-      </div>
-    </div>
-  </header>
 
-  <main class="container">
-    <div class="hero">
-      <span class="badge" style="background: rgba(255,255,255,0.25); color: white;">
-        Hosted on Firebase
-      </span>
-      <h1>Accessible Video Study Companion</h1>
-      <p>
-        Support for neurodivergent elementary and high school learners: recorded lessons with clickable synchronized transcripts, simplified key terms, sensory breaks, and instant teacher access codes.
-      </p>
+    // Render lessons grid based on query, filter, sort & active student code
+    window.renderLessons = function() {
+      const grid = document.getElementById('lessonsGrid');
+      const q = document.getElementById('searchQuery').value.trim().toLowerCase();
+      const subj = document.getElementById('filterSubject').value;
+      const grade = document.getElementById('filterGrade').value;
+      const sort = document.getElementById('sortBy').value;
 
-      <div class="code-box">
-        <input type="text" id="studentCodeInput" placeholder="ENTER STUDENT CODE (e.g. BIO-101)">
-        <button class="btn btn-green" onclick="handleStudentCode()">
-          Unlock Lessons
-        </button>
-      </div>
-      <div style="margin-top: 0.75rem; font-size: 0.85rem; color: #c7d2fe;">
-        Demo Student Codes: <strong style="cursor: pointer;" onclick="quickCode('BIO-101')">BIO-101</strong>, <strong style="cursor: pointer;" onclick="quickCode('EARTH-2026')">EARTH-2026</strong>, <strong style="cursor: pointer;" onclick="quickCode('MATH-5A')">MATH-5A</strong>
-      </div>
-    </div>
+      let filtered = [...allLessons];
 
-    <h2>Features & Architecture</h2>
-    <div class="card-grid">
-      <div class="card">
-        <span class="badge">Teacher's Portal</span>
-        <h3>Teacher Login & Student Codes</h3>
-        <p style="color: #64748b; font-size: 0.95rem;">
-          Secure teacher signup, password-authenticated login, and primary student access code generation. Teachers can provide their customized code to students.
-        </p>
-      </div>
+      // 1. Filter by student code
+      if (activeStudentCode) {
+        filtered = filtered.filter(l => (l.student_code || '').toUpperCase() === activeStudentCode.toUpperCase());
+        document.getElementById('activeCodeBadge').style.display = 'inline-flex';
+        document.getElementById('activeCodeText').textContent = activeStudentCode;
+      } else {
+        document.getElementById('activeCodeBadge').style.display = 'none';
+      }
 
-      <div class="card">
-        <span class="badge">Cloud Database</span>
-        <h3>Firebase Firestore Integration</h3>
-        <p style="color: #64748b; font-size: 0.95rem;">
-          Integrated with project <code>neurodivergent-app-15a25</code> supporting full CRUD operations (Create, Read, Update, Delete) with resilient offline fallback.
-        </p>
-      </div>
+      // 2. Filter by search query
+      if (q) {
+        filtered = filtered.filter(l =>
+          (l.title || '').toLowerCase().includes(q) ||
+          (l.description || '').toLowerCase().includes(q) ||
+          (l.student_code || '').toLowerCase().includes(q)
+        );
+      }
 
-      <div class="card">
-        <span class="badge">Search & Filter</span>
-        <h3>Query, Filter & Sorting</h3>
-        <p style="color: #64748b; font-size: 0.95rem;">
-          Fast keyword queries, filtering by subject (Science, Math, English, etc.) and grade level, sorted by date, title, or duration.
-        </p>
-      </div>
+      // 3. Filter by subject
+      if (subj !== 'All') {
+        filtered = filtered.filter(l => (l.subject || '').toLowerCase() === subj.toLowerCase());
+      }
 
-      <div class="card">
-        <span class="badge">Accessibility</span>
-        <h3>Calming Themes & Sensory Pause</h3>
-        <p style="color: #64748b; font-size: 0.95rem;">
-          Guided 30-second box breathing pause, adjustable font sizing, contrast modes, and text-to-speech definitions for neurodivergent learners.
-        </p>
-      </div>
-    </div>
-  </main>
+      // 4. Filter by grade
+      if (grade !== 'All') {
+        filtered = filtered.filter(l => (l.grade_level || '').toLowerCase() === grade.toLowerCase());
+      }
 
-  <footer>
-    Neurodivergent Lesson Companion &bull; Python Flask + Firebase Firestore + Firebase Hosting
-  </footer>
+      // 5. Sorting
+      if (sort === 'title_asc') filtered.sort((a,b) => (a.title||'').localeCompare(b.title||''));
+      else if (sort === 'title_desc') filtered.sort((a,b) => (b.title||'').localeCompare(a.title||''));
+      else if (sort === 'duration_desc') filtered.sort((a,b) => (b.duration||0) - (a.duration||0));
 
-  <script>
-    function quickCode(code) {
-      document.getElementById('studentCodeInput').value = code;
-    }
-    function handleStudentCode() {
-      const code = document.getElementById('studentCodeInput').value.trim();
-      if (!code) {
-        alert("Please enter a student code provided by your teacher (e.g. BIO-101)");
+      document.getElementById('lessonCountBadge').textContent = `${filtered.length} lesson(s)`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 3rem; background: var(--bg-card); border: 2px dashed var(--border-color); border-radius: 1.5rem;">
+            <h3>No Lessons Found</h3>
+            <p style="color: var(--text-muted);">No lessons matched your search or class code.</p>
+            <button class="btn btn-secondary" onclick="showAllLessons()">View All Lessons</button>
+          </div>
+        `;
         return;
       }
-      window.location.href = `/?code=${encodeURIComponent(code)}`;
+
+      grid.innerHTML = filtered.map(l => `
+        <article class="lesson-card">
+          <div class="card-thumbnail">
+            <div class="play-icon">▶</div>
+            <span class="duration-badge">${Math.floor(l.duration/60)}:${String(Math.floor(l.duration%60)).padStart(2,'0')}</span>
+          </div>
+          <div class="card-body">
+            <div class="card-badges">
+              <span class="badge badge-subject">${l.subject}</span>
+              <span class="badge">${l.grade_level}</span>
+              <span class="badge badge-code">Code: ${l.student_code}</span>
+            </div>
+            <h3>${l.title}</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.5;">${l.description || ''}</p>
+            <div class="card-footer">
+              <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">${(l.key_terms||[]).length} terms</span>
+              <button class="btn btn-primary btn-sm" onclick="openLessonPlayer('${l.id}')">Open Lesson &rarr;</button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    };
+
+    // Student Code Handlers
+    window.applyStudentCode = function() {
+      const code = document.getElementById('studentCodeInput').value.trim().toUpperCase();
+      if (!code) {
+        alert("Please enter a student code (e.g. BIO-101)");
+        return;
+      }
+      activeStudentCode = code;
+      localStorage.setItem('nd_active_code', activeStudentCode);
+      renderLessons();
+    };
+
+    window.quickApplyCode = function(code) {
+      document.getElementById('studentCodeInput').value = code;
+      activeStudentCode = code;
+      localStorage.setItem('nd_active_code', activeStudentCode);
+      renderLessons();
+    };
+
+    window.clearStudentCode = function() {
+      activeStudentCode = '';
+      localStorage.removeItem('nd_active_code');
+      document.getElementById('studentCodeInput').value = '';
+      renderLessons();
+    };
+
+    window.showAllLessons = function() {
+      clearStudentCode();
+      resetFilters();
+    };
+
+    window.resetFilters = function() {
+      document.getElementById('searchQuery').value = '';
+      document.getElementById('filterSubject').value = 'All';
+      document.getElementById('filterGrade').value = 'All';
+      document.getElementById('sortBy').value = 'newest';
+      renderLessons();
+    };
+
+    // Teacher Portal UI and Auth Handlers
+    window.openTeacherModal = function() {
+      document.getElementById('teacherModal').style.display = 'flex';
+      if (currentTeacher) {
+        showTeacherDashboard();
+      } else {
+        document.getElementById('teacherAuthView').style.display = 'block';
+        document.getElementById('teacherDashboardView').style.display = 'none';
+      }
+    };
+
+    window.closeTeacherModal = function() {
+      document.getElementById('teacherModal').style.display = 'none';
+    };
+
+    window.switchTeacherTab = function(tab) {
+      const isLogin = tab === 'login';
+      document.getElementById('subLoginView').style.display = isLogin ? 'block' : 'none';
+      document.getElementById('subSignupView').style.display = isLogin ? 'none' : 'block';
+      document.getElementById('tabLoginBtn').className = `btn btn-${isLogin ? 'primary' : 'secondary'} btn-sm`;
+      document.getElementById('tabSignupBtn').className = `btn btn-${isLogin ? 'secondary' : 'primary'} btn-sm`;
+    };
+
+    window.handleTeacherLogin = function(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const pass = document.getElementById('loginPassword').value;
+
+      // Demo or saved teacher verification
+      if (email === 'teacher@school.edu' && pass === 'teacher123') {
+        currentTeacher = {
+          id: "teacher_default_1",
+          name: "Ms. Henderson",
+          email: "teacher@school.edu",
+          student_code: "BIO-101"
+        };
+      } else {
+        const savedTeachers = JSON.parse(localStorage.getItem('nd_teachers') || '[]');
+        const matched = savedTeachers.find(t => t.email === email && t.password === pass);
+        if (matched) {
+          currentTeacher = matched;
+        } else {
+          alert("Invalid teacher email or password.");
+          return;
+        }
+      }
+
+      localStorage.setItem('nd_current_teacher', JSON.stringify(currentTeacher));
+      showTeacherDashboard();
+      updateTeacherNav();
+    };
+
+    window.handleTeacherSignup = async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+      const code = document.getElementById('signupCode').value.trim().toUpperCase();
+      const pass = document.getElementById('signupPassword').value;
+
+      const newTeacher = {
+        id: "teacher_" + Date.now(),
+        name: name,
+        email: email,
+        student_code: code,
+        password: pass
+      };
+
+      // Save to Firestore if available
+      try {
+        await setDoc(doc(db, "teachers", newTeacher.id), newTeacher);
+      } catch (err) {
+        console.warn("Firestore write notice:", err);
+      }
+
+      // Save locally
+      const savedTeachers = JSON.parse(localStorage.getItem('nd_teachers') || '[]');
+      savedTeachers.push(newTeacher);
+      localStorage.setItem('nd_teachers', JSON.stringify(savedTeachers));
+
+      currentTeacher = newTeacher;
+      localStorage.setItem('nd_current_teacher', JSON.stringify(currentTeacher));
+      alert(`Account created! Your student code is ${code}.`);
+      showTeacherDashboard();
+      updateTeacherNav();
+    };
+
+    function showTeacherDashboard() {
+      document.getElementById('teacherAuthView').style.display = 'none';
+      document.getElementById('teacherDashboardView').style.display = 'block';
+      document.getElementById('teacherCodeDisplay').textContent = currentTeacher.student_code;
+
+      renderTeacherLessonsTable();
+    }
+
+    function renderTeacherLessonsTable() {
+      const tbody = document.getElementById('teacherLessonsTableBody');
+      const teacherLessons = allLessons;
+
+      tbody.innerHTML = teacherLessons.map(l => `
+        <tr style="border-bottom: 1px solid var(--border-color);">
+          <td style="padding: 0.75rem;"><strong>${l.title}</strong></td>
+          <td style="padding: 0.75rem;"><span class="badge badge-subject">${l.subject}</span></td>
+          <td style="padding: 0.75rem;"><span class="badge badge-code">${l.student_code}</span></td>
+          <td style="padding: 0.75rem;">
+            <button class="btn btn-secondary btn-sm" onclick="openLessonPlayer('${l.id}')">View</button>
+            <button class="btn btn-secondary btn-sm" onclick="openLessonFormModal('edit', '${l.id}')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteLesson('${l.id}')">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    window.copyTeacherCode = function() {
+      const code = currentTeacher.student_code;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.getElementById('copyStudentCodeBtn');
+        btn.textContent = "✅ Copied Code: " + code;
+        setTimeout(() => { btn.textContent = "📋 Copy Code for Students"; }, 2500);
+      });
+    };
+
+    window.handleTeacherLogout = function() {
+      currentTeacher = null;
+      localStorage.removeItem('nd_current_teacher');
+      document.getElementById('teacherAuthView').style.display = 'block';
+      document.getElementById('teacherDashboardView').style.display = 'none';
+      updateTeacherNav();
+      closeTeacherModal();
+    };
+
+    function updateTeacherNav() {
+      const btn = document.getElementById('teacherPortalNavBtn');
+      if (currentTeacher) {
+        btn.textContent = `👩‍🏫 Portal (${currentTeacher.name})`;
+      } else {
+        btn.textContent = `🔐 Teacher Portal & Login`;
+      }
+    }
+
+    // CRUD: Delete Lesson
+    window.deleteLesson = async function(id) {
+      if (!confirm("Are you sure you want to delete this lesson?")) return;
+      try {
+        await deleteDoc(doc(db, "lessons", id));
+      } catch (err) {
+        console.warn("Cloud delete fallback:", err);
+      }
+      allLessons = allLessons.filter(l => l.id !== id);
+      localStorage.setItem('nd_lessons', JSON.stringify(allLessons));
+      renderLessons();
+      renderTeacherLessonsTable();
+    };
+
+    // CRUD: Create & Edit Form Modal
+    window.openLessonFormModal = function(mode, id) {
+      document.getElementById('lessonFormModal').style.display = 'flex';
+      document.getElementById('formLessonId').value = id || '';
+      document.getElementById('lessonFormTitle').textContent = mode === 'create' ? 'Add New Lesson' : 'Edit Lesson';
+
+      if (mode === 'edit' && id) {
+        const l = allLessons.find(x => x.id === id);
+        if (l) {
+          document.getElementById('formTitle').value = l.title;
+          document.getElementById('formSubject').value = l.subject;
+          document.getElementById('formGrade').value = l.grade_level;
+          document.getElementById('formCode').value = l.student_code;
+          document.getElementById('formVideoUrl').value = l.video_url;
+          document.getElementById('formDescription').value = l.description || '';
+          document.getElementById('formTerms').value = (l.key_terms || []).map(t => `${t.term}: ${t.explanation}`).join('\n');
+        }
+      } else {
+        document.getElementById('formTitle').value = '';
+        document.getElementById('formCode').value = currentTeacher ? currentTeacher.student_code : 'BIO-101';
+        document.getElementById('formDescription').value = '';
+        document.getElementById('formTerms').value = '';
+      }
+    };
+
+    window.closeLessonFormModal = function() {
+      document.getElementById('lessonFormModal').style.display = 'none';
+    };
+
+    window.handleSaveLesson = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('formLessonId').value || ('lesson_' + Date.now());
+      const rawTerms = document.getElementById('formTerms').value.trim();
+      const keyTerms = rawTerms.split('\n').filter(Boolean).map(line => {
+        const parts = line.split(':');
+        return { term: parts[0].trim(), explanation: (parts[1] || '').trim() };
+      });
+
+      const lessonData = {
+        id: id,
+        title: document.getElementById('formTitle').value.trim(),
+        subject: document.getElementById('formSubject').value,
+        grade_level: document.getElementById('formGrade').value,
+        student_code: document.getElementById('formCode').value.trim().toUpperCase(),
+        video_url: document.getElementById('formVideoUrl').value.trim(),
+        duration: 180,
+        description: document.getElementById('formDescription').value.trim(),
+        key_terms: keyTerms,
+        segments: [
+          { index: 0, startTime: 0, endTime: 60, text: document.getElementById('formTitle').value },
+          { index: 1, startTime: 60, endTime: 180, text: document.getElementById('formDescription').value || "Core concept explanation." }
+        ]
+      };
+
+      // Save to Firestore
+      try {
+        await setDoc(doc(db, "lessons", id), lessonData);
+      } catch (err) {
+        console.warn("Firestore save notice:", err);
+      }
+
+      // Save locally
+      const existingIdx = allLessons.findIndex(l => l.id === id);
+      if (existingIdx >= 0) allLessons[existingIdx] = lessonData;
+      else allLessons.unshift(lessonData);
+
+      localStorage.setItem('nd_lessons', JSON.stringify(allLessons));
+      closeLessonFormModal();
+      renderLessons();
+      renderTeacherLessonsTable();
+    };
+
+    // Lesson Viewer Player Modal
+    window.openLessonPlayer = function(id) {
+      const lesson = allLessons.find(l => l.id === id);
+      if (!lesson) return;
+
+      const container = document.getElementById('playerModalContent');
+      container.innerHTML = `
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+          <span class="badge badge-subject">${lesson.subject}</span>
+          <span class="badge">${lesson.grade_level}</span>
+          <span class="badge badge-code">Code: ${lesson.student_code}</span>
+        </div>
+        <h2 style="margin: 0 0 1rem 0;">${lesson.title}</h2>
+
+        <div style="background: black; border-radius: 1rem; overflow: hidden; margin-bottom: 1rem;">
+          <video id="modalVideo" src="${lesson.video_url}" controls style="width: 100%; max-height: 400px; display: block;"></video>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+          <div style="display: flex; gap: 0.35rem;">
+            <button class="btn btn-secondary btn-sm" onclick="setModalSpeed(0.75)">0.75x</button>
+            <button class="btn btn-secondary btn-sm" onclick="setModalSpeed(1.0)">1.0x</button>
+            <button class="btn btn-secondary btn-sm" onclick="setModalSpeed(1.25)">1.25x</button>
+          </div>
+          <button class="btn btn-calm btn-sm" onclick="openCalmModal()">💜 Sensory Pause (Breathing)</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div style="background: var(--bg-elevated); padding: 1rem; border-radius: 1rem; max-height: 300px; overflow-y: auto;">
+            <h4 style="margin: 0 0 0.5rem 0;">Synchronized Transcript</h4>
+            ${(lesson.segments || []).map(s => `
+              <div class="segment-line" onclick="document.getElementById('modalVideo').currentTime = ${s.startTime}; document.getElementById('modalVideo').play();">
+                <span class="segment-time">${Math.floor(s.startTime/60)}:${String(Math.floor(s.startTime%60)).padStart(2,'0')}</span>
+                <span>${s.text}</span>
+              </div>
+            `).join('')}
+          </div>
+
+          <div style="background: var(--bg-elevated); padding: 1rem; border-radius: 1rem; max-height: 300px; overflow-y: auto;">
+            <h4 style="margin: 0 0 0.5rem 0;">Key Terms</h4>
+            ${(lesson.key_terms || []).map(t => `
+              <div class="key-term-item">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong style="color: var(--primary);">${t.term}</strong>
+                  <button class="btn btn-secondary btn-sm" style="padding: 0.15rem 0.4rem; font-size: 0.75rem;" onclick="speakWeb('${t.term}. ${t.explanation}')">🔊</button>
+                </div>
+                <div style="font-size: 0.85rem; margin-top: 0.2rem;">${t.explanation}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      document.getElementById('lessonPlayerModal').style.display = 'flex';
+    };
+
+    window.closeLessonPlayerModal = function() {
+      const vid = document.getElementById('modalVideo');
+      if (vid) vid.pause();
+      document.getElementById('lessonPlayerModal').style.display = 'none';
+    };
+
+    window.setModalSpeed = function(rate) {
+      const vid = document.getElementById('modalVideo');
+      if (vid) vid.playbackRate = rate;
+    };
+
+    window.speakWeb = function(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+      }
+    };
+
+    window.openCalmModal = function() {
+      const vid = document.getElementById('modalVideo');
+      if (vid) vid.pause();
+      document.getElementById('calmModal').style.display = 'flex';
+    };
+    window.closeCalmModal = function() {
+      document.getElementById('calmModal').style.display = 'none';
+    };
+
+    // Initialize
+    syncWithFirestore();
+  </script>
+
+  <!-- Accessibility Global Script -->
+  <script>
+    function changeTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('nd_theme', theme);
+    }
+    const t = localStorage.getItem('nd_theme');
+    if (t) {
+      document.documentElement.setAttribute('data-theme', t);
+      const sel = document.getElementById('themeSelect');
+      if (sel) sel.value = t;
+    }
+    let fs = parseInt(localStorage.getItem('nd_fontSize') || '16', 10);
+    function adjustFontSize(d) {
+      fs = Math.min(24, Math.max(14, fs + d * 2));
+      document.documentElement.style.setProperty('--font-base', fs + 'px');
+      localStorage.setItem('nd_fontSize', fs);
     }
   </script>
 </body>

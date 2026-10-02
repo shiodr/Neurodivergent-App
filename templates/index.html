@@ -3,6 +3,33 @@
 {% block title %}Accessible Lessons - Neurodivergent Lesson Companion{% endblock %}
 
 {% block content %}
+<!-- Teacher Portal Banner Shortcut -->
+<div style="background: var(--bg-card); border: 2px solid var(--accent-calm); border-radius: 1rem; padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+  <div style="display: flex; align-items: center; gap: 0.75rem;">
+    <span style="font-size: 1.8rem;">👩‍🏫</span>
+    <div>
+      <strong style="color: var(--accent-calm); font-size: 1.05rem;">Are you an Educator / Teacher?</strong>
+      <div style="color: var(--text-muted); font-size: 0.85rem;">
+        Sign in to view your class code for students, upload lessons, and manage video transcripts.
+      </div>
+    </div>
+  </div>
+  <div>
+    {% if current_user %}
+      <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-primary btn-sm" style="font-weight: 800;">
+        Open Teacher Dashboard &rarr;
+      </a>
+    {% else %}
+      <a href="{{ url_for('login') }}" class="btn btn-secondary btn-sm" style="font-weight: 700;">
+        Teacher Login
+      </a>
+      <a href="{{ url_for('signup') }}" class="btn btn-primary btn-sm" style="font-weight: 800; margin-left: 0.4rem;">
+        Teacher Signup &rarr;
+      </a>
+    {% endif %}
+  </div>
+</div>
+
 <!-- Student Code Hero Banner -->
 <section class="code-hero-card" role="region" aria-label="Student Code Entry">
   <div style="max-width: 700px;">
